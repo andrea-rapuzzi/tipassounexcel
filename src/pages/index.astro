@@ -7,25 +7,7 @@ const trips = await getTrips();
 const latest = trips.slice(0, 3);
 ---
 
-<Layout title="Home" formulaBar="=CONDIVIDI(viaggi, amici)" cellRef="A1">
-
-  <!-- Hero -->
-  <section class="hero">
-    <div class="container">
-      <h1>Ti passo un Excel 📊</h1>
-      <p>
-        Ogni viaggio merita un foglio di calcolo. Qui trovi tutti gli Excel dei
-        nostri viaggi — budget, alloggi, ristoranti, trasporti — pronti da
-        scaricare e condividere con chi c'era.
-      </p>
-      <div class="hero-actions">
-        <a href="/viaggi" class="btn btn-primary">Sfoglia i viaggi</a>
-        <a href="https://docs.google.com/spreadsheets" target="_blank" rel="noopener" class="btn btn-outline">
-          Apri Google Sheets
-        </a>
-      </div>
-    </div>
-  </section>
+<Layout title="Home" description="Ogni viaggio, faccenda di casa o progetto merita un foglio di calcolo. Qui trovi i miei migliori.">
 
   <!-- Corpo principale -->
   <div class="page-wrapper">

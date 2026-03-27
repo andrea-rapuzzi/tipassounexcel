@@ -5,14 +5,12 @@ import Footer from '../components/Footer.astro';
 
 export interface Props {
   title?: string;
-  formulaBar?: string;
-  cellRef?: string;
+  description?: string;
 }
 
 const {
   title = 'Ti passo un Excel',
-  formulaBar,
-  cellRef = 'A1',
+  description,
 } = Astro.props as Props;
 ---
 
@@ -21,12 +19,20 @@ const {
   <head>
     <meta charset="UTF-8" />
     <meta name="viewport" content="width=device-width, initial-scale=1.0" />
-    <meta name="description" content="La raccolta dei fogli Excel dei nostri viaggi — condivisi con chi li ha vissuti." />
+    <meta name="description" content={description || 'La raccolta dei fogli Excel dei nostri viaggi — condivisi con chi li ha vissuti.'} />
     <link rel="icon" href="/favicon.svg" type="image/svg+xml" />
     <title>{title} · Ti passo un Excel</title>
   </head>
   <body>
     <Header />
+    {description && (
+      <div class="formula-bar-hero expanded" id="formula-bar">
+        <span class="fb-fx">fx</span>
+        <div class="fb-sep"></div>
+        <span class="fb-value">{description}</span>
+        <button class="fb-chevron" id="fb-toggle" aria-label="Comprimi descrizione">&#8964;</button>
+      </div>
+    )}
     <slot />
     <Footer />
     <div class="sheet-tabs-bar">
@@ -36,3 +42,13 @@ const {
     </div>
   </body>
 </html>
+
+<script>
+  const bar = document.getElementById('formula-bar');
+  const btn = document.getElementById('fb-toggle');
+  if (bar && btn) {
+    btn.addEventListener('click', () => {
+      bar.classList.toggle('expanded');
+    });
+  }
+</script>
