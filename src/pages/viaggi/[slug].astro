@@ -1,0 +1,148 @@
+---
+import Layout from '../../layouts/Layout.astro';
+import { getTrips } from '../../lib/sheets.js';
+
+export async function getStaticPaths() {
+  const trips = await getTrips();
+  return trips.map((trip) => ({
+    params: { slug: trip.slug },
+    props: { trip },
+  }));
+}
+
+const { trip } = Astro.props;
+
+const tipoEmoji: Record<string, string> = {
+  Mare: '🏖️',
+  Montagna: '⛰️',
+  Città: '🏙️',
+  Avventura: '🧗',
+};
+
+const tipoBadge: Record<string, string> = {
+  Mare: 'badge-mare',
+  Montagna: 'badge-montagna',
+  Città: 'badge-citta',
+};
+
+const emoji = tipoEmoji[trip.tipo] || '✈️';
+const badgeClass = tipoBadge[trip.tipo] || 'badge-altro';
+
+const costoFormatted = trip.costo
+  ? new Intl.NumberFormat('it-IT', { style: 'currency', currency: 'EUR', maximumFractionDigits: 0 }).format(Number(trip.costo))
+  : '—';
+
+const costoPerPersona =
+  trip.costo && trip.persone && Number(trip.persone) > 0
+    ? new Intl.NumberFormat('it-IT', { style: 'currency', currency: 'EUR', maximumFractionDigits: 0 }).format(
+        Number(trip.costo) / Number(trip.persone)
+      )
+    : '—';
+
+const dataFormatted = trip.data
+  ? new Date(trip.data).toLocaleDateString('it-IT', { year: 'numeric', month: 'long', day: 'numeric' })
+  : '—';
+---
+
+<Layout
+  title={trip.titolo}
+  formulaBar={`="${trip.titolo}" · ${costoFormatted} · ${trip.persone} persone`}
+  cellRef="B2"
+>
+
+  <!-- Header viaggio -->
+  <section class="trip-page-header">
+    <div class="container">
+      <div style="margin-bottom:10px;">
+        <a href="/viaggi" style="color:rgba(255,255,255,0.7); font-size:0.85rem;">
+          ← I Viaggi
+        </a>
+      </div>
+      <h1>{emoji} {trip.titolo}</h1>
+      <div class="trip-page-meta">
+        <span class="trip-meta-chip">
+          <span class={`badge ${badgeClass}`}>{trip.tipo}</span>
+        </span>
+        <span class="trip-meta-chip">📍 {trip.destinazione}</span>
+        <span class="trip-meta-chip">👥 {trip.persone} persone</span>
+        <span class="trip-meta-chip">📅 {dataFormatted}</span>
+      </div>
+    </div>
+  </section>
+
+  <div class="page-wrapper">
+    <div class="container" style="max-width: 860px;">
+
+      <!-- Descrizione -->
+      {trip.descrizione && (
+        <div class="sheet-panel" style="padding: 20px 24px; margin-bottom: 24px;">
+          <p style="font-size:1rem; color:var(--text); line-height:1.7; margin:0;">
+            {trip.descrizione}
+          </p>
+        </div>
+      )}
+
+      <!-- Scheda dati stile foglio Excel -->
+      <h2 class="section-title" style="margin-bottom:12px;">Dati del viaggio</h2>
+      <div class="trip-detail-sheet" style="margin-bottom: 28px;">
+        <div class="trip-detail-row">
+          <div class="trip-detail-label">Destinazione</div>
+          <div class="trip-detail-value">📍 {trip.destinazione}</div>
+        </div>
+        <div class="trip-detail-row">
+          <div class="trip-detail-label">Tipo di viaggio</div>
+          <div class="trip-detail-value">
+            <span class={`badge ${badgeClass}`}>{trip.tipo}</span>
+          </div>
+        </div>
+        <div class="trip-detail-row">
+          <div class="trip-detail-label">Numero di persone</div>
+          <div class="trip-detail-value">👥 {trip.persone}</div>
+        </div>
+        <div class="trip-detail-row">
+          <div class="trip-detail-label">Costo totale</div>
+          <div class="trip-detail-value costo">{costoFormatted}</div>
+        </div>
+        <div class="trip-detail-row">
+          <div class="trip-detail-label">Costo a persona</div>
+          <div class="trip-detail-value" style="color:var(--text-muted);">{costoPerPersona}</div>
+        </div>
+        {trip.data && (
+          <div class="trip-detail-row">
+            <div class="trip-detail-label">Data</div>
+            <div class="trip-detail-value">📅 {dataFormatted}</div>
+          </div>
+        )}
+      </div>
+
+      <!-- Azioni -->
+      <h2 class="section-title" style="margin-bottom:12px;">File del viaggio</h2>
+
+      {(!trip.link_sheet && !trip.link_excel) ? (
+        <div class="sheet-panel" style="padding: 24px; text-align:center; color:var(--text-muted);">
+          <div style="font-size:2rem; margin-bottom:8px;">🔧</div>
+          <p style="margin:0;">I link al file non sono ancora stati aggiunti. Aggiorna il Google Sheet per renderli disponibili.</p>
+        </div>
+      ) : (
+        <div class="trip-actions">
+          {trip.link_sheet && (
+            <a href={trip.link_sheet} target="_blank" rel="noopener" class="btn btn-green" style="font-size:1rem; padding:12px 24px;">
+              📊 Apri Google Sheet
+            </a>
+          )}
+          {trip.link_excel && (
+            <a href={trip.link_excel} class="btn btn-ghost" style="font-size:1rem; padding:12px 24px;">
+              ⬇️ Scarica file XLS
+            </a>
+          )}
+        </div>
+      )}
+
+      <!-- Navigazione -->
+      <div style="margin-top: 40px; padding-top: 20px; border-top: 1px solid var(--border-light);">
+        <a href="/viaggi" class="btn btn-ghost">← Torna a tutti i viaggi</a>
+      </div>
+
+    </div>
+  </div>
+</Layout>

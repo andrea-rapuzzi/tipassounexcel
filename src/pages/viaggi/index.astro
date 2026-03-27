@@ -1,0 +1,162 @@
+---
+import Layout from '../../layouts/Layout.astro';
+import TripCard from '../../components/TripCard.astro';
+import { getTrips } from '../../lib/sheets.js';
+
+const trips = await getTrips();
+
+const tipi = [...new Set(trips.map((t) => t.tipo).filter(Boolean))].sort();
+const personeOptions = [...new Set(trips.map((t) => t.persone).filter(Boolean))]
+  .map(Number)
+  .sort((a, b) => a - b);
+---
+
+<Layout title="I Viaggi" formulaBar={`=FILTRA(viaggi, ${trips.length} righe)`} cellRef="A1">
+
+  <!-- Header pagina -->
+  <section class="trip-page-header">
+    <div class="container">
+      <h1>📂 I Viaggi</h1>
+      <p style="color: rgba(255,255,255,0.85); margin-top:8px; max-width:560px;">
+        Tutti i fogli Excel dei nostri viaggi. Usa i filtri per trovare quello che cerchi.
+      </p>
+    </div>
+  </section>
+
+  <div class="page-wrapper">
+    <div class="container">
+
+      <!-- Filter bar stile AutoFilter Excel -->
+      <div class="filter-bar">
+        <div class="filter-group">
+          <label for="filter-tipo">▼ Tipo</label>
+          <select id="filter-tipo" class="filter-select">
+            <option value="">Tutti</option>
+            {tipi.map((t) => <option value={t}>{t}</option>)}
+          </select>
+        </div>
+
+        <div class="filter-divider"></div>
+
+        <div class="filter-group">
+          <label for="filter-persone">▼ Persone</label>
+          <select id="filter-persone" class="filter-select">
+            <option value="">Tutte</option>
+            {personeOptions.map((n) => (
+              <option value={String(n)}>{n} {n === 1 ? 'persona' : 'persone'}</option>
+            ))}
+          </select>
+        </div>
+
+        <div class="filter-divider"></div>
+
+        <div class="filter-group">
+          <label for="sort-by">↕ Ordina</label>
+          <select id="sort-by" class="filter-select">
+            <option value="data-desc">Più recenti</option>
+            <option value="data-asc">Più vecchi</option>
+            <option value="costo-asc">Costo ↑</option>
+            <option value="costo-desc">Costo ↓</option>
+            <option value="dest-asc">Destinazione A→Z</option>
+          </select>
+        </div>
+
+        <span class="filter-count" id="count-label">{trips.length} viaggi</span>
+
+        <button id="reset-filters" class="btn btn-ghost" style="font-size:0.78rem; padding:5px 10px; margin-left:auto;">
+          ✕ Azzera filtri
+        </button>
+      </div>
+
+      <!-- Griglia viaggi -->
+      <div class="trips-grid" id="trips-grid">
+        {trips.map((trip) => (
+          <div
+            class="trip-card-wrapper"
+            data-tipo={trip.tipo}
+            data-persone={trip.persone}
+            data-costo={trip.costo}
+            data-data={trip.data}
+            data-dest={trip.destinazione}
+          >
+            <TripCard {...trip} />
+          </div>
+        ))}
+      </div>
+
+      <div id="empty-filtered" class="empty-state" style="display:none;">
+        <div class="empty-icon">🔍</div>
+        <p>Nessun viaggio corrisponde ai filtri selezionati.</p>
+        <button onclick="document.getElementById('reset-filters').click()" class="btn btn-ghost" style="margin-top:12px;">
+          Azzera filtri
+        </button>
+      </div>
+
+    </div>
+  </div>
+</Layout>
+
+<script>
+  const tipoSel = document.getElementById('filter-tipo') as HTMLSelectElement;
+  const personeSel = document.getElementById('filter-persone') as HTMLSelectElement;
+  const sortSel = document.getElementById('sort-by') as HTMLSelectElement;
+  const resetBtn = document.getElementById('reset-filters') as HTMLButtonElement;
+  const countLabel = document.getElementById('count-label') as HTMLSpanElement;
+  const emptyMsg = document.getElementById('empty-filtered') as HTMLDivElement;
+  const grid = document.getElementById('trips-grid') as HTMLDivElement;
+
+  function getWrappers() {
+    return Array.from(grid.querySelectorAll('.trip-card-wrapper')) as HTMLDivElement[];
+  }
+
+  function applyFilters() {
+    const tipo = tipoSel.value;
+    const persone = personeSel.value;
+    const sort = sortSel.value;
+
+    const wrappers = getWrappers();
+
+    wrappers.forEach((w) => {
+      const matchTipo = !tipo || w.dataset.tipo === tipo;
+      const matchPersone = !persone || w.dataset.persone === persone;
+      w.style.display = matchTipo && matchPersone ? '' : 'none';
+    });
+
+    // Sort visible
+    const visible = wrappers.filter((w) => w.style.display !== 'none');
+
+    visible.sort((a, b) => {
+      if (sort === 'costo-asc') return Number(a.dataset.costo) - Number(b.dataset.costo);
+      if (sort === 'costo-desc') return Number(b.dataset.costo) - Number(a.dataset.costo);
+      if (sort === 'dest-asc') return (a.dataset.dest || '').localeCompare(b.dataset.dest || '');
+      if (sort === 'data-asc') return (a.dataset.data || '').localeCompare(b.dataset.data || '');
+      // data-desc (default)
+      return (b.dataset.data || '').localeCompare(a.dataset.data || '');
+    });
+
+    visible.forEach((w) => grid.appendChild(w));
+
+    const count = visible.length;
+    const total = wrappers.length;
+    countLabel.textContent = count === total
+      ? `${total} viaggi`
+      : `${count} di ${total} viaggi`;
+
+    emptyMsg.style.display = count === 0 ? 'block' : 'none';
+    grid.style.display = count === 0 ? 'none' : '';
+  }
+
+  tipoSel.addEventListener('change', applyFilters);
+  personeSel.addEventListener('change', applyFilters);
+  sortSel.addEventListener('change', applyFilters);
+
+  resetBtn.addEventListener('click', () => {
+    tipoSel.value = '';
+    personeSel.value = '';
+    sortSel.value = 'data-desc';
+    applyFilters();
+  });
+
+  // Applica ordine di default al caricamento
+  applyFilters();
+</script>
