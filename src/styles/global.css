@@ -1,5 +1,5 @@
 :root {
-  --green: #217346;
+  --green: #207346;
   --green-dark: #1a5c37;
   --green-light: #e8f4ed;
   --green-mid: #107c41;
@@ -64,65 +64,109 @@ h1, h2, h3, h4 {
 /* ── Ribbon / Header ── */
 .header {
   background: var(--green);
-  border-bottom: 2px solid var(--green-dark);
   position: sticky;
   top: 0;
   z-index: 100;
-  box-shadow: 0 2px 6px rgba(0,0,0,0.25);
+  box-shadow: 0 2px 8px rgba(0,0,0,0.3);
 }
 
-.header .container {
+/* Top bar: icon | title | actions */
+.header-topbar {
   display: flex;
   align-items: center;
-  justify-content: space-between;
-  height: 52px;
-  padding: 0 24px;
+  padding: 6px 16px 2px;
+  position: relative;
 }
 
-.header-logo {
+.header-left {
   display: flex;
   align-items: center;
-  gap: 10px;
-  color: #fff;
-  font-size: 1.1rem;
-  font-weight: 700;
-  letter-spacing: -0.3px;
+  gap: 8px;
 }
 
-.header-logo .logo-icon {
+.logo-icon {
   width: 28px;
   height: 28px;
-  background: #fff;
+  flex-shrink: 0;
   border-radius: 3px;
+  overflow: hidden;
   display: flex;
   align-items: center;
   justify-content: center;
-  flex-shrink: 0;
 }
 
-.header-logo .logo-icon svg {
-  width: 18px;
-  height: 18px;
+.logo-icon svg {
+  width: 28px;
+  height: 28px;
 }
 
-.header nav ul {
-  display: flex;
-  gap: 2px;
-}
-
-.header nav ul li a {
-  display: block;
+.header-title {
+  position: absolute;
+  left: 50%;
+  transform: translateX(-50%);
   color: #fff;
-  padding: 6px 14px;
-  border-radius: 3px;
-  font-size: 0.9rem;
-  transition: background 0.15s;
+  font-size: 0.88rem;
+  font-weight: 600;
+  letter-spacing: 0.1px;
+  opacity: 0.95;
+  pointer-events: none;
+  white-space: nowrap;
 }
 
-.header nav ul li a:hover,
-.header nav ul li a.active {
-  background: rgba(255,255,255,0.18);
+.header-right {
+  display: flex;
+  align-items: center;
+  gap: 4px;
+  margin-left: auto;
+}
+
+.header-icon-btn {
+  color: rgba(255,255,255,0.85);
+  width: 30px;
+  height: 30px;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  border-radius: 3px;
+  transition: background 0.12s;
+}
+
+.header-icon-btn:hover {
+  background: rgba(255,255,255,0.15);
   text-decoration: none;
+}
+
+/* Ribbon tab row */
+.header-ribbon {
+  display: flex;
+  align-items: flex-end;
+  justify-content: center;
+  padding: 0 12px;
+  gap: 0;
+}
+
+.ribbon-tab {
+  color: rgba(255,255,255,0.78);
+  font-size: 0.82rem;
+  font-weight: 500;
+  padding: 5px 16px 6px;
+  text-decoration: none;
+  border-bottom: 3px solid transparent;
+  transition: color 0.12s, border-color 0.12s;
+  white-space: nowrap;
+  letter-spacing: 0.1px;
+}
+
+.ribbon-tab:hover {
+  color: #fff;
+  text-decoration: none;
+  border-bottom-color: rgba(255,255,255,0.4);
+}
+
+.ribbon-tab.active {
+  color: #fff;
+  font-weight: 700;
+  border-bottom-color: #fff;
 }
 
 /* ── Formula bar (decorative) ── */
@@ -165,6 +209,70 @@ h1, h2, h3, h4 {
   border: 1px solid var(--border);
   border-radius: 0;
   box-shadow: 0 1px 4px rgba(0,0,0,0.08);
+}
+
+/* ── Formula bar hero ── */
+.formula-bar-hero {
+  display: flex;
+  align-items: center;
+  background: #fff;
+  border-bottom: 1px solid #d0d0d0;
+  border-top: 1px solid #d0d0d0;
+  padding: 16px 32px;
+  gap: 12px;
+  font-family: 'Calibri', 'Segoe UI', system-ui, sans-serif;
+  font-size: 0.92rem;
+  box-shadow: inset 0 -2px 0 #e8e8e8, inset 0 2px 0 #e8e8e8;
+}
+
+.fb-fx {
+  color: #7b2d8b;
+  font-family: Georgia, 'Times New Roman', serif;
+  font-style: italic;
+  font-size: 1rem;
+  flex-shrink: 0;
+  letter-spacing: -0.3px;
+}
+
+.fb-sep {
+  width: 1px;
+  height: 16px;
+  background: #c0c0c0;
+  flex-shrink: 0;
+}
+
+.fb-value {
+  flex: 1;
+  color: #212121;
+  white-space: nowrap;
+  overflow: hidden;
+  text-overflow: ellipsis;
+  font-size: 0.88rem;
+}
+
+.formula-bar-hero.expanded .fb-value {
+  white-space: normal;
+  overflow: visible;
+}
+
+.fb-chevron {
+  background: none;
+  border: none;
+  cursor: pointer;
+  color: #595959;
+  font-size: 1.3rem;
+  flex-shrink: 0;
+  align-self: center;
+  padding: 0 4px;
+  line-height: 1;
+  display: flex;
+  align-items: center;
+  transition: transform 0.2s ease;
+  transform: rotate(0deg);
+}
+
+.formula-bar-hero.expanded .fb-chevron {
+  transform: rotate(180deg);
 }
 
 /* ── Hero / Showcase ── */
@@ -413,18 +521,33 @@ h1, h2, h3, h4 {
 /* ── Filter bar (stile AutoFilter Excel) ── */
 .filter-bar {
   background: #fff;
-  border: 1px solid var(--border);
+  border-top: none;
+  border-left: 1px solid var(--border);
+  border-right: 1px solid var(--border);
   border-bottom: 2px solid var(--green);
-  padding: 10px 16px;
+  padding: 12px 16px;
   display: flex;
-  align-items: center;
+  flex-direction: column;
+  gap: 10px;
+  margin-bottom: 0;
+}
+
+.filter-dropdowns {
+  display: flex;
   gap: 12px;
   flex-wrap: wrap;
-  margin-bottom: 20px;
+}
+
+.filter-group {
+  display: flex;
+  flex-direction: column;
+  gap: 4px;
+  flex: 1;
+  min-width: 130px;
 }
 
 .filter-bar label {
-  font-size: 0.78rem;
+  font-size: 0.72rem;
   color: var(--text-muted);
   text-transform: uppercase;
   letter-spacing: 0.4px;
@@ -433,40 +556,35 @@ h1, h2, h3, h4 {
 
 .filter-select {
   appearance: none;
-  background: #fff url("data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' width='10' height='6' viewBox='0 0 10 6'%3E%3Cpath fill='%23217346' d='M0 0l5 6 5-6z'/%3E%3C/svg%3E") no-repeat right 8px center;
+  background: #fff url("data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' width='10' height='6' viewBox='0 0 10 6'%3E%3Cpath fill='%23207346' d='M0 0l5 6 5-6z'/%3E%3C/svg%3E") no-repeat right 8px center;
   border: 1px solid var(--border);
   border-radius: 2px;
-  padding: 5px 28px 5px 10px;
+  padding: 6px 28px 6px 10px;
   font-size: 0.85rem;
   font-family: inherit;
   color: var(--text);
   cursor: pointer;
   transition: border-color 0.15s;
-  min-width: 140px;
+  width: 100%;
 }
 
 .filter-select:hover,
 .filter-select:focus {
   border-color: var(--green);
   outline: none;
-  box-shadow: 0 0 0 2px rgba(33,115,70,0.15);
+  box-shadow: 0 0 0 2px rgba(32,115,70,0.15);
 }
 
-.filter-group {
+.filter-actions {
   display: flex;
   align-items: center;
-  gap: 6px;
-}
-
-.filter-divider {
-  width: 1px;
-  height: 20px;
-  background: var(--border);
+  justify-content: space-between;
+  padding-top: 4px;
+  border-top: 1px solid var(--border-light);
 }
 
 .filter-count {
-  margin-left: auto;
-  font-size: 0.8rem;
+  font-size: 0.82rem;
   color: var(--text-muted);
   font-style: italic;
 }
@@ -483,6 +601,105 @@ h1, h2, h3, h4 {
   border-right: 1px solid var(--border);
   background: #f3f3f3;
   user-select: none;
+}
+
+/* ── Excel Table (viaggi list) ── */
+.xl-table-wrap {
+  overflow-x: auto;
+  border: 1px solid var(--border);
+  border-top: none;
+}
+
+.xl-table {
+  width: 100%;
+  border-collapse: collapse;
+  font-size: 0.88rem;
+}
+
+.xl-th {
+  background: #404040;
+  color: #fff;
+  font-weight: 700;
+  font-size: 0.78rem;
+  text-transform: uppercase;
+  letter-spacing: 0.4px;
+  padding: 10px 14px;
+  text-align: left;
+  border-right: 1px solid rgba(255,255,255,0.12);
+  border-bottom: 2px solid #404040;
+  white-space: nowrap;
+}
+
+.xl-th:last-child { border-right: none; }
+
+.xl-th-num {
+  width: 40px;
+  text-align: center;
+  background: #2b2b2b;
+  border-bottom-color: #2b2b2b;
+}
+
+.xl-th-action { width: 90px; }
+
+.trip-card-wrapper td { border-bottom: 1px solid var(--border-light); }
+
+.trip-card-wrapper:nth-child(even) td { background: #f7f7f7; }
+.trip-card-wrapper:nth-child(odd)  td { background: #fff; }
+
+.trip-card-wrapper:hover td { background: #edf7f1; }
+
+.xl-td {
+  padding: 9px 14px;
+  border-right: 1px solid var(--border-light);
+  vertical-align: middle;
+  color: var(--text);
+}
+
+.xl-td:last-child { border-right: none; }
+
+.xl-td-num {
+  text-align: center;
+  color: var(--text-muted);
+  font-size: 0.75rem;
+  background: #f3f3f3 !important;
+  border-right: 1px solid var(--border);
+  width: 40px;
+}
+
+.xl-td-title {
+  font-weight: 600;
+  display: flex;
+  align-items: center;
+  gap: 8px;
+  min-width: 180px;
+}
+
+.xl-emoji { font-size: 1.1rem; flex-shrink: 0; }
+
+.xl-td-costo {
+  font-weight: 700;
+  color: var(--green-dark);
+  white-space: nowrap;
+}
+
+.xl-td-action {
+  text-align: center;
+  white-space: nowrap;
+}
+
+.xl-open-link {
+  color: var(--green);
+  font-weight: 600;
+  font-size: 0.82rem;
+  text-decoration: none;
+  padding: 4px 8px;
+  border-radius: 2px;
+  transition: background 0.12s;
+}
+
+.xl-open-link:hover {
+  background: var(--green-light);
+  text-decoration: none;
 }
 
 /* ── Individual trip page ── */
@@ -661,7 +878,7 @@ body {
 }
 
 .badge-mare { background: #e3f2fd; color: #0070c0; }
-.badge-montagna { background: #e8f5e9; color: #217346; }
+.badge-montagna { background: #e8f5e9; color: #207346; }
 .badge-citta { background: #fff3e0; color: #c45911; }
 .badge-altro { background: #f3e5f5; color: #7b2d8b; }
 
