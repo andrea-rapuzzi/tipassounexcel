@@ -1,0 +1,74 @@
+---
+export interface Props {
+  slug: string;
+  titolo: string;
+  destinazione: string;
+  tipo: string;
+  persone: string;
+  costo: string;
+  link_sheet?: string;
+  link_excel?: string;
+}
+
+const { slug, titolo, destinazione, tipo, persone, costo, link_sheet, link_excel } = Astro.props;
+
+const tipoEmoji: Record<string, string> = {
+  Mare: '🏖️',
+  Montagna: '⛰️',
+  Città: '🏙️',
+  Avventura: '🧗',
+};
+
+const tipoBadge: Record<string, string> = {
+  Mare: 'badge-mare',
+  Montagna: 'badge-montagna',
+  Città: 'badge-citta',
+};
+
+const emoji = tipoEmoji[tipo] || '✈️';
+const badgeClass = tipoBadge[tipo] || 'badge-altro';
+
+const costoFormatted = costo
+  ? new Intl.NumberFormat('it-IT', { style: 'currency', currency: 'EUR', maximumFractionDigits: 0 }).format(Number(costo))
+  : '—';
+---
+
+<article class="trip-card">
+  <div class="trip-card-header">
+    <div class="trip-card-icon">{emoji}</div>
+    <div>
+      <div class="trip-card-title">{titolo}</div>
+      <div class="trip-card-dest">
+        <span class={`badge ${badgeClass}`}>{tipo}</span>
+        &nbsp;{destinazione}
+      </div>
+    </div>
+  </div>
+
+  <div class="trip-card-table">
+    <div class="trip-row">
+      <div class="trip-cell label">Persone</div>
+      <div class="trip-cell label">Costo tot.</div>
+    </div>
+    <div class="trip-row">
+      <div class="trip-cell value">👥 {persone}</div>
+      <div class="trip-cell value costo">{costoFormatted}</div>
+    </div>
+  </div>
+
+  <div class="trip-card-footer">
+    <a href={`/viaggi/${slug}`} class="btn btn-green">
+      Apri
+    </a>
+    {link_sheet && (
+      <a href={link_sheet} target="_blank" rel="noopener" class="btn btn-ghost">
+        📊 Sheet
+      </a>
+    )}
+    {link_excel && (
+      <a href={link_excel} class="btn btn-ghost">
+        ⬇️ XLS
+      </a>
+    )}
+  </div>
+</article>

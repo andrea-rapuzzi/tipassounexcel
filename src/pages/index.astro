@@ -1,31 +1,111 @@
 ---
-import Features from '../components/Features.astro';
-import Showcase from '../components/Showcase.astro';
 import Layout from '../layouts/Layout.astro';
-import Tabs from '../components/Tabs.astro';
+import TripCard from '../components/TripCard.astro';
+import { getTrips } from '../lib/sheets.js';
 
+const trips = await getTrips();
+const latest = trips.slice(0, 3);
 ---
 
-<Layout>
-    <Showcase showExtra= {true}/>
-    <Features />
-    <section class="page-content">
-      <div class="container">
-        <h2>Get Started With Astro</h2>
-        <p>
-          Get a new Astro project up and running locally with our helpful
-          create-astro CLI wizard!
-        </p>
-        <Tabs />
-        <h3>Start Building</h3>
-        <p>
-          Lorem ipsum dolor sit amet consectetur adipisicing elit. Dicta ipsum
-          deserunt inventore ut voluptate, officia maiores repellat tenetur
-          praesentium omnis est ex tempora a necessitatibus reiciendis at et
-          dignissimos. Ipsam eius consequuntur cupiditate aperiam porro, esse
-          laborum impedit nesciunt ut voluptatum assumenda aspernatur libero
-          iusto error molestias dolorum, necessitatibus labore?
-        </p>
+<Layout title="Home" formulaBar="=CONDIVIDI(viaggi, amici)" cellRef="A1">
+
+  <!-- Hero -->
+  <section class="hero">
+    <div class="container">
+      <h1>Ti passo un Excel 📊</h1>
+      <p>
+        Ogni viaggio merita un foglio di calcolo. Qui trovi tutti gli Excel dei
+        nostri viaggi — budget, alloggi, ristoranti, trasporti — pronti da
+        scaricare e condividere con chi c'era.
+      </p>
+      <div class="hero-actions">
+        <a href="/viaggi" class="btn btn-primary">Sfoglia i viaggi</a>
+        <a href="https://docs.google.com/spreadsheets" target="_blank" rel="noopener" class="btn btn-outline">
+          Apri Google Sheets
+        </a>
       </div>
-    </section>
+    </div>
+  </section>
+
+  <!-- Corpo principale -->
+  <div class="page-wrapper">
+    <div class="container">
+
+      <!-- Come funziona -->
+      <div class="sheet-panel" style="padding: 28px 32px; margin-bottom: 36px;">
+        <h2 style="font-size:1.1rem; color: var(--green); margin-bottom:16px;">
+          📋 Come funziona
+        </h2>
+        <div style="display:grid; grid-template-columns: repeat(auto-fit, minmax(200px, 1fr)); gap: 24px;">
+          <div>
+            <div style="font-size:1.6rem; margin-bottom:6px;">📂</div>
+            <strong>Un viaggio, un file</strong>
+            <p style="font-size:0.88rem; color: var(--text-muted);">
+              Ogni viaggio ha la sua pagina con tutte le info e i link al foglio Google o al file XLS da scaricare.
+            </p>
+          </div>
+          <div>
+            <div style="font-size:1.6rem; margin-bottom:6px;">🔗</div>
+            <strong>Condivisione immediata</strong>
+            <p style="font-size:0.88rem; color: var(--text-muted);">
+              Manda il link della pagina agli amici. Trovano tutto: budget totale, suddivisione spese, prenotazioni.
+            </p>
+          </div>
+          <div>
+            <div style="font-size:1.6rem; margin-bottom:6px;">🔄</div>
+            <strong>Sempre aggiornato</strong>
+            <p style="font-size:0.88rem; color: var(--text-muted);">
+              I dati vengono da un Google Sheet. Aggiorna il foglio e il sito si aggiorna al prossimo deploy.
+            </p>
+          </div>
+        </div>
+      </div>
+
+      <!-- Ultimi viaggi -->
+      <div class="section-header">
+        <h2 class="section-title">Ultimi caricati</h2>
+        <a href="/viaggi" class="btn btn-ghost" style="font-size:0.82rem;">
+          Vedi tutti →
+        </a>
+      </div>
+
+      {latest.length > 0 ? (
+        <div class="trips-grid">
+          {latest.map((trip) => (
+            <TripCard {...trip} />
+          ))}
+        </div>
+      ) : (
+        <div class="empty-state">
+          <div class="empty-icon">📭</div>
+          <p>Nessun viaggio ancora. Configura il Google Sheet per iniziare.</p>
+        </div>
+      )}
+
+      <!-- Stats strip -->
+      {trips.length > 0 && (
+        <div style="display:grid; grid-template-columns: repeat(3, 1fr); gap: 1px; background: var(--border); border: 1px solid var(--border); margin-top: 36px;">
+          <div style="background:#fff; padding:20px; text-align:center;">
+            <div style="font-size:2rem; font-weight:700; color:var(--green);">{trips.length}</div>
+            <div style="font-size:0.82rem; color:var(--text-muted); text-transform:uppercase; letter-spacing:0.5px;">Viaggi</div>
+          </div>
+          <div style="background:#fff; padding:20px; text-align:center;">
+            <div style="font-size:2rem; font-weight:700; color:var(--green);">
+              {trips.reduce((sum, t) => sum + (parseInt(t.persone) || 0), 0)}
+            </div>
+            <div style="font-size:0.82rem; color:var(--text-muted); text-transform:uppercase; letter-spacing:0.5px;">Partecipanti totali</div>
+          </div>
+          <div style="background:#fff; padding:20px; text-align:center;">
+            <div style="font-size:2rem; font-weight:700; color:var(--green);">
+              {new Intl.NumberFormat('it-IT', {style:'currency', currency:'EUR', maximumFractionDigits:0}).format(
+                trips.reduce((sum, t) => sum + (parseFloat(t.costo) || 0), 0)
+              )}
+            </div>
+            <div style="font-size:0.82rem; color:var(--text-muted); text-transform:uppercase; letter-spacing:0.5px;">Speso in totale</div>
+          </div>
+        </div>
+      )}
+
+    </div>
+  </div>
 </Layout>
