@@ -10,14 +10,10 @@ const allTipi = [...new Set(
 
 const stagioni = ['Primavera', 'Estate', 'Autunno', 'Inverno'];
 
-const tipoEmoji: Record<string, string> = {
-  Mare: '🏖️', Montagna: '⛰️', Città: '🏙️', Avventura: '🧗',
-  Cultura: '🏛️', Trekking: '🥾', Relax: '💆',
-};
 const tipoBadge: Record<string, string> = {
   Mare: 'badge-mare', Montagna: 'badge-montagna', Città: 'badge-citta',
-  Cultura: 'badge-cultura', Trekking: 'badge-trekking', Relax: 'badge-relax',
-  Avventura: 'badge-avventura',
+  Roadtrip: 'badge-roadtrip', Natura: 'badge-natura', Cultura: 'badge-cultura',
+  Trekking: 'badge-trekking', Relax: 'badge-relax', Avventura: 'badge-avventura',
 };
 ---
 
@@ -60,8 +56,6 @@ const tipoBadge: Record<string, string> = {
           <option value="originale">Ordine originale</option>
           <option value="data-desc">Più recenti</option>
           <option value="data-asc">Più vecchi</option>
-          <option value="costo-asc">Costo ↑</option>
-          <option value="costo-desc">Costo ↓</option>
           <option value="dest-asc">Destinazione A→Z</option>
         </select>
       </div>
@@ -129,8 +123,10 @@ const tipoBadge: Record<string, string> = {
             >
               <td class="xl-td xl-td-num">{i + 1}</td>
               <td class="xl-td xl-td-title">
-                <span class="xl-emoji">{tipoEmoji[firstTipo] || '✈️'}</span>
-                <a href={`/viaggi/${trip.slug}`} class="xl-dest-link">{trip.titolo}</a>
+                <div class="xl-td-title-inner">
+                  <span class="xl-emoji">{trip.emoji || '✈️'}</span>
+                  <a href={`/viaggi/${trip.slug}`} class="xl-dest-link">{trip.titolo}</a>
+                </div>
               </td>
               <td class="xl-td">
                 <div class="xl-td-tags">

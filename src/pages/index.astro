@@ -1,93 +1,227 @@
 ---
 import Layout from '../layouts/Layout.astro';
-import TripCard from '../components/TripCard.astro';
 import { getTrips } from '../lib/sheets.js';
 
 const trips = await getTrips();
-const latest = trips.slice(0, 3);
+const latest = trips
+  .slice()
+  .sort((a, b) => new Date(b.data).getTime() - new Date(a.data).getTime())
+  .slice(0, 4);
+
+const tipoBadge: Record<string, string> = {
+  Mare: 'badge-mare', Montagna: 'badge-montagna', Città: 'badge-citta',
+  Roadtrip: 'badge-roadtrip', Natura: 'badge-natura', Cultura: 'badge-cultura',
+  Trekking: 'badge-trekking', Relax: 'badge-relax', Avventura: 'badge-avventura',
+};
+
+const firstTripRow = 7; // riga di partenza dei viaggi
 ---
 
 <Layout title="Home" description="Ogni viaggio, faccenda di casa o progetto merita un foglio di calcolo. Qui trovi i miei migliori.">
 
-  <!-- Corpo principale -->
-  <div class="page-wrapper">
-    <div class="container">
+  <div class="xl-table-wrap">
+    <table class="xl-table">
+      <thead>
+        <tr class="xl-col-letters">
+          <th class="xl-th-rn"></th>
+          <th class="xl-th-letter">A</th>
+          <th class="xl-th-letter">B</th>
+          <th class="xl-th-letter">C</th>
+          <th class="xl-th-letter">D</th>
+          <th class="xl-th-letter">E</th>
+          <th class="xl-th-letter">F</th>
+          <th class="xl-th-letter">G</th>
+          <th class="xl-th-letter">H</th>
+          <th class="xl-th-letter">I</th>
+          <th class="xl-th-letter">J</th>
+        </tr>
+      </thead>
+      <tbody>
 
-      <!-- Come funziona -->
-      <div class="sheet-panel" style="padding: 28px 32px; margin-bottom: 36px;">
-        <h2 style="font-size:1.1rem; color: var(--green); margin-bottom:16px;">
-          📋 Come funziona
-        </h2>
-        <div style="display:grid; grid-template-columns: repeat(auto-fit, minmax(200px, 1fr)); gap: 24px;">
-          <div>
-            <div style="font-size:1.6rem; margin-bottom:6px;">📂</div>
-            <strong>Un viaggio, un file</strong>
-            <p style="font-size:0.88rem; color: var(--text-muted);">
-              Ogni viaggio ha la sua pagina con tutte le info e i link al foglio Google o al file XLS da scaricare.
-            </p>
-          </div>
-          <div>
-            <div style="font-size:1.6rem; margin-bottom:6px;">🔗</div>
-            <strong>Condivisione immediata</strong>
-            <p style="font-size:0.88rem; color: var(--text-muted);">
-              Manda il link della pagina agli amici. Trovano tutto: budget totale, suddivisione spese, prenotazioni.
-            </p>
-          </div>
-          <div>
-            <div style="font-size:1.6rem; margin-bottom:6px;">🔄</div>
-            <strong>Sempre aggiornato</strong>
-            <p style="font-size:0.88rem; color: var(--text-muted);">
-              I dati vengono da un Google Sheet. Aggiorna il foglio e il sito si aggiorna al prossimo deploy.
-            </p>
-          </div>
-        </div>
-      </div>
-
-      <!-- Ultimi viaggi -->
-      <div class="section-header">
-        <h2 class="section-title">Ultimi caricati</h2>
-        <a href="/viaggi" class="btn btn-ghost" style="font-size:0.82rem;">
-          Vedi tutti →
-        </a>
-      </div>
-
-      {latest.length > 0 ? (
-        <div class="trips-grid">
-          {latest.map((trip) => (
-            <TripCard {...trip} />
-          ))}
-        </div>
-      ) : (
-        <div class="empty-state">
-          <div class="empty-icon">📭</div>
-          <p>Nessun viaggio ancora. Configura il Google Sheet per iniziare.</p>
-        </div>
-      )}
-
-      <!-- Stats strip -->
-      {trips.length > 0 && (
-        <div style="display:grid; grid-template-columns: repeat(3, 1fr); gap: 1px; background: var(--border); border: 1px solid var(--border); margin-top: 36px;">
-          <div style="background:#fff; padding:20px; text-align:center;">
-            <div style="font-size:2rem; font-weight:700; color:var(--green);">{trips.length}</div>
-            <div style="font-size:0.82rem; color:var(--text-muted); text-transform:uppercase; letter-spacing:0.5px;">Viaggi</div>
-          </div>
-          <div style="background:#fff; padding:20px; text-align:center;">
-            <div style="font-size:2rem; font-weight:700; color:var(--green);">
-              {trips.reduce((sum, t) => sum + (parseInt(t.persone) || 0), 0)}
+        <!-- Riga 1: benvenuto + prima release -->
+        <tr>
+          <td class="xl-td xl-td-num">1</td>
+          <td class="xl-td home-label">Ciao 👋</td>
+          <td class="xl-td home-content">
+            <div class="home-content-inner">
+              Questo è un piccolo sideproject di <strong>Andrea Rapuzzi</strong> — ingegnere del software con una passione per i viaggi e per i fogli di calcolo.
+              Siamo alla <strong>prima release</strong>: per ora trovi i miei viaggi con i rispettivi fogli Excel. A breve aggiungerò altri contenuti — faccende di casa, progetti e tutto ciò che merita un foglio di calcolo.
             </div>
-            <div style="font-size:0.82rem; color:var(--text-muted); text-transform:uppercase; letter-spacing:0.5px;">Partecipanti totali</div>
-          </div>
-          <div style="background:#fff; padding:20px; text-align:center;">
-            <div style="font-size:2rem; font-weight:700; color:var(--green);">
-              {new Intl.NumberFormat('it-IT', {style:'currency', currency:'EUR', maximumFractionDigits:0}).format(
-                trips.reduce((sum, t) => sum + (parseFloat(t.costo) || 0), 0)
-              )}
-            </div>
-            <div style="font-size:0.82rem; color:var(--text-muted); text-transform:uppercase; letter-spacing:0.5px;">Speso in totale</div>
-          </div>
-        </div>
-      )}
+          </td>
+          <td class="xl-td"></td><td class="xl-td"></td><td class="xl-td"></td>
+          <td class="xl-td"></td><td class="xl-td"></td><td class="xl-td"></td>
+          <td class="xl-td xl-td-empty"></td><td class="xl-td xl-td-empty"></td>
+        </tr>
 
-    </div>
+        <!-- Righe 2–3: vuote -->
+        {[2, 3].map((n) => (
+          <tr class="xl-row-empty">
+            <td class="xl-td-num">{n}</td>
+            <td class="xl-td"></td><td class="xl-td"></td><td class="xl-td"></td>
+            <td class="xl-td"></td><td class="xl-td"></td><td class="xl-td"></td>
+            <td class="xl-td xl-td-empty"></td><td class="xl-td xl-td-empty"></td>
+            <td class="xl-td xl-td-empty"></td><td class="xl-td xl-td-empty"></td>
+          </tr>
+        ))}
+
+        <!-- Riga 5: intestazione sezione viaggi -->
+        <tr>
+          <td class="xl-td xl-td-num">5</td>
+          <td class="xl-td home-section-label">Ultimi viaggi</td>
+          <td class="xl-td home-section-desc" colspan="4">Gli ultimi fogli caricati, ordinati per data.</td>
+          <td class="xl-td xl-td-empty"></td><td class="xl-td xl-td-empty"></td>
+          <td class="xl-td xl-td-empty"></td><td class="xl-td xl-td-empty"></td>
+          <td class="xl-td xl-td-empty"></td>
+        </tr>
+
+        <!-- Riga 6: vuota separatore -->
+        <tr class="xl-row-empty">
+          <td class="xl-td-num">6</td>
+          <td class="xl-td"></td><td class="xl-td"></td><td class="xl-td"></td>
+          <td class="xl-td"></td><td class="xl-td"></td><td class="xl-td"></td>
+          <td class="xl-td xl-td-empty"></td><td class="xl-td xl-td-empty"></td>
+          <td class="xl-td xl-td-empty"></td><td class="xl-td xl-td-empty"></td>
+        </tr>
+
+        <!-- Righe 7–10: ultimi 4 viaggi -->
+        {latest.map((trip, i) => {
+          const tipiList = trip.tipo ? trip.tipo.split(',').map((s: string) => s.trim()) : [];
+          const dataFormatted = trip.data
+            ? new Date(trip.data).toLocaleDateString('it-IT', { day: '2-digit', month: '2-digit', year: 'numeric' })
+            : '—';
+          return (
+            <tr class="trip-card-wrapper">
+              <td class="xl-td xl-td-num">{firstTripRow + i}</td>
+              <td class="xl-td xl-td-title">
+                <div class="xl-td-title-inner">
+                  <span class="xl-emoji">{trip.emoji || '✈️'}</span>
+                  <a href={`/viaggi/${trip.slug}`} class="xl-dest-link">{trip.titolo}</a>
+                </div>
+              </td>
+              <td class="xl-td">
+                <div class="xl-td-tags">
+                  {tipiList.map((tag: string) => (
+                    <span class={`badge ${tipoBadge[tag] || 'badge-altro'}`}>{tag}</span>
+                  ))}
+                </div>
+              </td>
+              <td class="xl-td">👥 {trip.persone}</td>
+              <td class="xl-td xl-td-data">{dataFormatted}</td>
+              <td class="xl-td xl-td-action">
+                <a href={`/viaggi/${trip.slug}`} class="xl-open-link">Apri →</a>
+              </td>
+              <td class="xl-td xl-td-empty"></td>
+              <td class="xl-td xl-td-empty"></td>
+              <td class="xl-td xl-td-empty"></td>
+              <td class="xl-td xl-td-empty"></td>
+              <td class="xl-td xl-td-empty"></td>
+            </tr>
+          );
+        })}
+
+        <!-- Righe vuote dopo i viaggi -->
+        {[11, 12, 13].map((n) => (
+          <tr class="xl-row-empty">
+            <td class="xl-td-num">{n}</td>
+            <td class="xl-td"></td><td class="xl-td"></td><td class="xl-td"></td>
+            <td class="xl-td"></td><td class="xl-td"></td><td class="xl-td"></td>
+            <td class="xl-td xl-td-empty"></td><td class="xl-td xl-td-empty"></td>
+            <td class="xl-td xl-td-empty"></td><td class="xl-td xl-td-empty"></td>
+          </tr>
+        ))}
+
+        <!-- Riga 14: CTA -->
+        <tr>
+          <td class="xl-td xl-td-num">14</td>
+          <td class="xl-td home-label">Contribuisci 🙌</td>
+          <td class="xl-td home-content">
+            <div class="home-content-inner">
+              Hai un suggerimento per migliorare il sito? O un Excel che vorresti condividere con altri?
+              <a href="https://www.linkedin.com/in/andrearapuzzi/" target="_blank" rel="noopener" class="home-cta-link">Scrivimi su LinkedIn →</a>
+            </div>
+          </td>
+          <td class="xl-td"></td><td class="xl-td"></td><td class="xl-td"></td>
+          <td class="xl-td"></td><td class="xl-td"></td><td class="xl-td"></td>
+          <td class="xl-td xl-td-empty"></td><td class="xl-td xl-td-empty"></td>
+        </tr>
+
+        <!-- Righe vuote finali -->
+        {Array.from({ length: 8 }).map((_, i) => (
+          <tr class="xl-row-empty">
+            <td class="xl-td-num">{15 + i}</td>
+            <td class="xl-td"></td><td class="xl-td"></td><td class="xl-td"></td>
+            <td class="xl-td"></td><td class="xl-td"></td><td class="xl-td"></td>
+            <td class="xl-td xl-td-empty"></td><td class="xl-td xl-td-empty"></td>
+            <td class="xl-td xl-td-empty"></td><td class="xl-td xl-td-empty"></td>
+          </tr>
+        ))}
+
+      </tbody>
+    </table>
   </div>
+
 </Layout>
+
+<style>
+  .trip-card-wrapper:nth-child(even) td,
+  .trip-card-wrapper:nth-child(odd) td {
+    background: #fff;
+  }
+
+  .trip-card-wrapper:hover td {
+    background: #edf7f1;
+  }
+
+  .home-label {
+    font-weight: 700;
+    color: var(--green);
+    white-space: nowrap;
+    font-size: 0.88rem;
+  }
+
+  .home-content {
+    padding-top: 10px !important;
+    padding-bottom: 10px !important;
+    min-width: 400px;
+  }
+
+  .home-content-inner {
+    font-size: 0.88rem;
+    color: #333;
+    line-height: 1.5;
+    width: 100%;
+
+    white-space: normal;
+    overflow-wrap: break-word;
+  }
+
+  .home-content strong {
+    color: #111;
+  }
+
+  .home-section-label {
+    font-weight: 700;
+    font-size: 0.82rem;
+    text-transform: uppercase;
+    letter-spacing: 0.5px;
+    color: var(--green);
+    white-space: nowrap;
+  }
+
+  .home-section-desc {
+    font-size: 0.82rem;
+    color: var(--text-muted);
+  }
+
+  .home-cta-link {
+    display: inline-block;
+    margin-top: 6px;
+    font-weight: 600;
+    color: var(--green);
+    text-decoration: none;
+  }
+
+  .home-cta-link:hover {
+    text-decoration: underline;
+  }
+</style>
