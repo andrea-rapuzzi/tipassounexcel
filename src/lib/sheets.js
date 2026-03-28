@@ -60,12 +60,21 @@ function parseCSVLine(line) {
   return result;
 }
 
+export function getStagione(dateStr) {
+  if (!dateStr) return '';
+  const month = new Date(dateStr).getMonth() + 1;
+  if (month >= 3 && month <= 5) return 'Primavera';
+  if (month >= 6 && month <= 8) return 'Estate';
+  if (month >= 9 && month <= 11) return 'Autunno';
+  return 'Inverno';
+}
+
 function getSampleData() {
   return [
     {
       slug: 'portogallo-2023',
       destinazione: 'Portogallo',
-      tipo: 'Città',
+      tipo: 'Città,Cultura',
       persone: '4',
       costo: '2800',
       titolo: 'Portogallo 2023',
@@ -78,7 +87,7 @@ function getSampleData() {
     {
       slug: 'dolomiti-estate-2023',
       destinazione: 'Dolomiti',
-      tipo: 'Montagna',
+      tipo: 'Montagna,Avventura,Trekking',
       persone: '6',
       costo: '3200',
       titolo: 'Dolomiti Estate 2023',
@@ -91,7 +100,7 @@ function getSampleData() {
     {
       slug: 'sicilia-2022',
       destinazione: 'Sicilia',
-      tipo: 'Mare',
+      tipo: 'Mare,Cultura',
       persone: '5',
       costo: '3500',
       titolo: 'Sicilia 2022',
@@ -117,7 +126,7 @@ function getSampleData() {
     {
       slug: 'trentino-inverno-2024',
       destinazione: 'Trentino',
-      tipo: 'Montagna',
+      tipo: 'Montagna,Avventura',
       persone: '8',
       costo: '4800',
       titolo: 'Trentino Inverno 2024',
@@ -130,7 +139,7 @@ function getSampleData() {
     {
       slug: 'puglia-2024',
       destinazione: 'Puglia',
-      tipo: 'Mare',
+      tipo: 'Mare,Relax',
       persone: '4',
       costo: '2200',
       titolo: 'Puglia 2024',

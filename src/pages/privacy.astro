@@ -1,0 +1,148 @@
+---
+import Layout from '../layouts/Layout.astro';
+
+const lastUpdate = '28 marzo 2026';
+---
+
+<Layout
+  title="Privacy Policy"
+  description="Informativa sul trattamento dei dati personali ai sensi del Regolamento UE 2016/679 (GDPR)."
+>
+  <div class="page-wrapper">
+    <div class="container" style="max-width: 760px;">
+
+      <div class="trip-detail-sheet" style="margin-bottom: 32px;">
+
+        <!-- Titolare -->
+        <div class="trip-detail-row">
+          <div class="trip-detail-label">Titolare del sito</div>
+          <div class="trip-detail-value">Andrea Rapuzzi</div>
+        </div>
+        <div class="trip-detail-row">
+          <div class="trip-detail-label">Contatti</div>
+          <div class="trip-detail-value">
+            <a href="https://www.linkedin.com/in/andrearапузzi" target="_blank" rel="noopener">
+              LinkedIn → Andrea Rapuzzi
+            </a>
+          </div>
+        </div>
+        <div class="trip-detail-row">
+          <div class="trip-detail-label">Ultimo aggiornamento</div>
+          <div class="trip-detail-value">{lastUpdate}</div>
+        </div>
+
+      </div>
+
+      <!-- Sezioni -->
+      <div class="privacy-sections">
+
+        <div class="privacy-block">
+          <h2 class="section-title">Finalità del sito</h2>
+          <p>
+            <strong>Ti passo un Excel</strong> è un sito personale gestito da Andrea Rapuzzi.
+            Il sito raccoglie e pubblica fogli di calcolo relativi a viaggi e altre attività,
+            con l'obiettivo di condividerli in modo rapido con amici e conoscenti.
+            Non vengono offerte prestazioni commerciali né servizi a pagamento.
+          </p>
+        </div>
+
+        <div class="privacy-block">
+          <h2 class="section-title">Dati raccolti</h2>
+          <p>
+            Al momento <strong>non viene raccolta alcuna informazione personale</strong> degli
+            utenti che visitano il sito. Non sono presenti moduli di registrazione,
+            aree riservate, commenti o qualsiasi altro meccanismo che consenta
+            l'inserimento di dati personali.
+          </p>
+        </div>
+
+        <div class="privacy-block">
+          <h2 class="section-title">Sistemi di tracciamento</h2>
+          <p>
+            Il sito <strong>non utilizza sistemi di tracciamento</strong> degli utenti.
+            Non sono integrati Google Analytics, Meta Pixel, o qualsiasi altro
+            strumento di analisi comportamentale o di profilazione.
+          </p>
+        </div>
+
+        <div class="privacy-block">
+          <h2 class="section-title">Cookie</h2>
+          <p>
+            Vengono utilizzati esclusivamente <strong>cookie tecnici</strong>, strettamente
+            necessari al funzionamento del servizio. Nessun cookie di profilazione
+            o di terze parti a fini pubblicitari è presente sul sito.
+          </p>
+          <p>
+            I cookie tecnici sono generati dalle infrastrutture utilizzate per
+            realizzare e distribuire il servizio:
+          </p>
+          <div class="trip-detail-sheet" style="margin: 12px 0;">
+            <div class="trip-detail-row">
+              <div class="trip-detail-label">Astro</div>
+              <div class="trip-detail-value" style="font-size:0.88rem;">
+                Framework utilizzato per la generazione del sito statico.
+                Non imposta cookie di profilazione.
+                <a href="https://astro.build/privacy" target="_blank" rel="noopener">Privacy policy →</a>
+              </div>
+            </div>
+            <div class="trip-detail-row">
+              <div class="trip-detail-label">Netlify</div>
+              <div class="trip-detail-value" style="font-size:0.88rem;">
+                Piattaforma di hosting utilizzata per distribuire il sito.
+                Può impostare cookie tecnici per la gestione del CDN.
+                <a href="https://www.netlify.com/privacy/" target="_blank" rel="noopener">Privacy policy →</a>
+              </div>
+            </div>
+          </div>
+        </div>
+
+        <div class="privacy-block">
+          <h2 class="section-title">Diritti dell'interessato</h2>
+          <p>
+            Ai sensi del Regolamento UE 2016/679 (GDPR), ogni interessato ha diritto
+            di accedere ai propri dati, richiederne la rettifica o cancellazione,
+            opporsi al trattamento e proporre reclamo all'autorità di controllo.
+            Poiché non vengono raccolti dati personali, tali diritti non trovano
+            applicazione concreta in questo contesto.
+          </p>
+        </div>
+
+        <div class="privacy-block">
+          <h2 class="section-title">Contatti</h2>
+          <p>
+            Per qualsiasi domanda relativa a questa informativa o al trattamento
+            dei dati, è possibile contattare il titolare tramite
+            <a href="https://www.linkedin.com/in/andrea-rapuzzi" target="_blank" rel="noopener">
+              LinkedIn
+            </a>.
+          </p>
+        </div>
+
+      </div>
+
+    </div>
+  </div>
+</Layout>
+
+<style>
+  .privacy-block {
+    margin-bottom: 32px;
+  }
+
+  .privacy-block .section-title {
+    margin-bottom: 10px;
+    font-size: 1rem;
+  }
+
+  .privacy-block p {
+    font-size: 0.92rem;
+    color: var(--text);
+    line-height: 1.75;
+    margin: 0 0 8px;
+  }
+
+  .privacy-block a {
+    color: var(--green);
+    text-decoration: underline;
+  }
+</style>
