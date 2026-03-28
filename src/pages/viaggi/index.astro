@@ -138,7 +138,6 @@ const tipoBadge: Record<string, string> = {
   const countLabel = document.getElementById('count-label') as HTMLSpanElement;
   const emptyMsg   = document.getElementById('empty-filtered') as HTMLDivElement;
   const tbody      = document.getElementById('trips-body') as HTMLTableSectionElement;
-  const emptyRows  = Array.from(document.querySelectorAll('#empty-rows .xl-row-empty')) as HTMLTableRowElement[];
 
   function getRows() {
     return Array.from(tbody.querySelectorAll('.trip-card-wrapper')) as HTMLTableRowElement[];
@@ -167,17 +166,7 @@ const tipoBadge: Record<string, string> = {
       return (b.dataset.data || '').localeCompare(a.dataset.data || '');
     });
 
-    visible.forEach((r, idx) => {
-      tbody.appendChild(r);
-      const numCell = r.querySelector('.xl-td-num');
-      if (numCell) numCell.textContent = String(idx + 1);
-    });
-
-    // rinumera le righe vuote in continuità con le righe dati visibili
-    emptyRows.forEach((r, idx) => {
-      const numCell = r.querySelector('.xl-td-num');
-      if (numCell) numCell.textContent = String(visible.length + idx + 1);
-    });
+    visible.forEach((r) => tbody.appendChild(r));
 
     const count = visible.length;
     const total = rows.length;
