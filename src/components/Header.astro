@@ -11,8 +11,8 @@ const currentPath = Astro.url.pathname;
       <a href="/" class="header-logo-link">
         <Image src={logo} alt="Ti passo un Excel" class="header-logo" width={48} height={48} />
       </a>
+      <div class="header-title">Ti passo un Excel<span class="header-title-ext">.xlsx</span></div>
     </div>
-    <div class="header-title">Ti passo un Excel</div>
     <div class="header-right">
       <button id="share-btn" class="share-btn" title="Condividi">
         <svg id="share-icon" width="14" height="14" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.2" stroke-linecap="round" stroke-linejoin="round">
@@ -115,6 +115,7 @@ const currentPath = Astro.url.pathname;
   <!-- Ribbon tabs -->
   <nav class="header-ribbon">
     <a href="/" class={`ribbon-tab${currentPath === '/' ? ' active' : ''}`}>Home</a>
-    <a href="/viaggi" class={`ribbon-tab${currentPath.startsWith('/viaggi') ? ' active' : ''}`}>I Viaggi</a>
+    <a href="/viaggi" class={`ribbon-tab${currentPath.startsWith('/viaggi') ? ' active' : ''}`}>Viaggi</a>
+    <a href="/task" class={`ribbon-tab${currentPath.startsWith('/task') ? ' active' : ''}`}>Task</a>
   </nav>
 </header>
