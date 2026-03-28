@@ -4,6 +4,7 @@
 
 [build.environment]
   NODE_VERSION = "22.18.0"
+  PUBLIC_SHEETS_CSV_URL = "https://docs.google.com/spreadsheets/d/e/2PACX-1vRlY51U-yeCewyzE_dAU9OdPnudUK_6WssceSDlW9Y9nt5rN-0bP_6tm9-SfBmj2PaMQa5YXP8jzGby/pub?gid=0&single=true&output=csv"
 
 [[redirects]]
   from = "/*"
