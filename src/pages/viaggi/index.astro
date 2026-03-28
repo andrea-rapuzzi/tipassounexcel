@@ -61,13 +61,27 @@ const tipoBadge: Record<string, string> = {
   <div class="xl-table-wrap">
     <table class="xl-table">
       <thead>
+        <!-- 2 righe vuote -->
+        <tr class="xl-row-empty">
+          <td class="xl-td-num"></td>
+          <td class="xl-td-spacer"></td>
+          <td></td><td></td><td></td><td></td>
+          <td class="xl-td-spacer"></td>
+        </tr>
+        <tr class="xl-row-empty">
+          <td class="xl-td-num"></td>
+          <td class="xl-td-spacer"></td>
+          <td></td><td></td><td></td><td></td>
+          <td class="xl-td-spacer"></td>
+        </tr>
         <tr>
           <th class="xl-th xl-th-num"></th>
+          <th class="xl-th xl-th-spacer"></th>
           <th class="xl-th">Destinazione</th>
           <th class="xl-th">Tipo</th>
           <th class="xl-th">Persone</th>
           <th class="xl-th">Costo tot.</th>
-          <th class="xl-th xl-th-action"></th>
+          <th class="xl-th xl-th-spacer"></th>
         </tr>
       </thead>
       <tbody id="trips-body">
@@ -81,6 +95,7 @@ const tipoBadge: Record<string, string> = {
             data-dest={trip.destinazione}
           >
             <td class="xl-td xl-td-num">{i + 1}</td>
+            <td class="xl-td xl-td-spacer"></td>
             <td class="xl-td xl-td-title">
               <span class="xl-emoji">{tipoEmoji[trip.tipo] || '✈️'}</span>
               {trip.titolo}
@@ -94,9 +109,7 @@ const tipoBadge: Record<string, string> = {
                 ? new Intl.NumberFormat('it-IT', { style: 'currency', currency: 'EUR', maximumFractionDigits: 0 }).format(Number(trip.costo))
                 : '—'}
             </td>
-            <td class="xl-td xl-td-action">
-              <a href={`/viaggi/${trip.slug}`} class="xl-open-link">Apri →</a>
-            </td>
+            <td class="xl-td xl-td-spacer"></td>
           </tr>
         ))}
       </tbody>

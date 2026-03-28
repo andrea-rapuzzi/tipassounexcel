@@ -641,6 +641,29 @@ h1, h2, h3, h4 {
 
 .xl-th-action { width: 90px; }
 
+.xl-th-spacer {
+  width: 32px;
+  background: #f3f3f3 !important;
+  border-right: 1px solid var(--border) !important;
+  border-left: 1px solid var(--border) !important;
+  padding: 0 !important;
+}
+
+.xl-td-spacer {
+  width: 32px;
+  background: #f3f3f3 !important;
+  border-right: 1px solid var(--border) !important;
+  border-left: 1px solid var(--border) !important;
+  padding: 0 !important;
+}
+
+.xl-row-empty td {
+  height: 22px;
+  background: #fff;
+  border-bottom: 1px solid var(--border-light);
+  padding: 0;
+}
+
 .trip-card-wrapper td { border-bottom: 1px solid var(--border-light); }
 
 .trip-card-wrapper:nth-child(even) td { background: #f7f7f7; }
