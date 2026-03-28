@@ -641,27 +641,39 @@ h1, h2, h3, h4 {
 
 .xl-th-action { width: 90px; }
 
-.xl-th-spacer {
-  width: 32px;
-  background: #f3f3f3 !important;
-  border-right: 1px solid var(--border) !important;
-  border-left: 1px solid var(--border) !important;
-  padding: 0 !important;
+/* Riga lettere colonna (A, B, C…) */
+.xl-col-letters { }
+
+.xl-th-rn {
+  background: #f3f3f3;
+  border-right: 1px solid var(--border);
+  border-bottom: 1px solid var(--border);
+  width: 48px;
 }
 
-.xl-td-spacer {
-  width: 32px;
-  background: #f3f3f3 !important;
-  border-right: 1px solid var(--border) !important;
-  border-left: 1px solid var(--border) !important;
-  padding: 0 !important;
+.xl-th-letter {
+  background: #f3f3f3;
+  color: var(--text-muted);
+  font-size: 0.78rem;
+  font-weight: 600;
+  text-align: center;
+  padding: 4px 8px;
+  border-right: 1px solid var(--border-light);
+  border-bottom: 1px solid var(--border);
+  letter-spacing: 0.3px;
 }
 
+/* Righe vuote */
 .xl-row-empty td {
   height: 22px;
   background: #fff;
   border-bottom: 1px solid var(--border-light);
-  padding: 0;
+  padding: 0 8px;
+  color: transparent;
+}
+
+.xl-row-empty .xl-td-num {
+  color: var(--text-muted);
 }
 
 .trip-card-wrapper td { border-bottom: 1px solid var(--border-light); }
