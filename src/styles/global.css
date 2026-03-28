@@ -260,7 +260,7 @@ h1, h2, h3, h4 {
   border: none;
   cursor: pointer;
   color: #595959;
-  font-size: 1.3rem;
+  display: flex;
   flex-shrink: 0;
   align-self: center;
   padding: 0 4px;
