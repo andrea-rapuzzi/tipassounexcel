@@ -1,0 +1,57 @@
+---
+import Layout from '../layouts/Layout.astro';
+---
+
+<Layout title="Task" description="Le task e i progetti in foglio di calcolo. In arrivo presto.">
+
+  <div class="xl-table-wrap">
+    <table class="xl-table">
+      <thead>
+        <tr class="xl-col-letters">
+          <th class="xl-th-rn"></th>
+          <th class="xl-th-letter">A</th>
+          <th class="xl-th-letter">B</th>
+          <th class="xl-th-letter">C</th>
+          <th class="xl-th-letter">D</th>
+          <th class="xl-th-letter">E</th>
+          <th class="xl-th-letter">F</th>
+          <th class="xl-th-letter">G</th>
+          <th class="xl-th-letter">H</th>
+        </tr>
+      </thead>
+      <tbody>
+
+        <tr>
+          <td class="xl-td xl-td-num">1</td>
+          <td class="xl-td coming-soon-cell" colspan="7">
+            <span class="coming-soon-text">Coming soon 🤔</span>
+          </td>
+          <td class="xl-td xl-td-empty"></td>
+        </tr>
+
+        {Array.from({ length: 20 }).map((_, i) => (
+          <tr class="xl-row-empty">
+            <td class="xl-td-num">{i + 2}</td>
+            <td class="xl-td"></td><td class="xl-td"></td><td class="xl-td"></td>
+            <td class="xl-td"></td><td class="xl-td"></td><td class="xl-td"></td>
+            <td class="xl-td xl-td-empty"></td><td class="xl-td xl-td-empty"></td>
+          </tr>
+        ))}
+
+      </tbody>
+    </table>
+  </div>
+
+</Layout>
+
+<style>
+  .coming-soon-cell {
+    padding: 24px 16px !important;
+  }
+
+  .coming-soon-text {
+    font-size: 1rem;
+    color: var(--text-muted);
+    font-style: italic;
+  }
+</style>

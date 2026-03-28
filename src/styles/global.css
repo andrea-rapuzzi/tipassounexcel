@@ -97,9 +97,6 @@ h1, h2, h3, h4 {
 }
 
 .header-title {
-  position: absolute;
-  left: 50%;
-  transform: translateX(-50%);
   color: #fff;
   font-size: 0.88rem;
   font-weight: 600;
@@ -107,6 +104,11 @@ h1, h2, h3, h4 {
   opacity: 0.95;
   pointer-events: none;
   white-space: nowrap;
+}
+
+.header-title-ext {
+  opacity: 0.6;
+  font-weight: 400;
 }
 
 .header-right {
