@@ -93,6 +93,18 @@ const currentPath = Astro.url.pathname;
   const label = document.getElementById('share-label') as HTMLSpanElement;
   const icon  = document.getElementById('share-icon') as SVGElement;
 
+  // Mantieni theme-color verde dopo ogni swap di pagina (ClientRouter)
+  function ensureThemeColor() {
+    let meta = document.querySelector('meta[name="theme-color"]') as HTMLMetaElement;
+    if (!meta) {
+      meta = document.createElement('meta');
+      meta.name = 'theme-color';
+      document.head.appendChild(meta);
+    }
+    meta.content = '#207346';
+  }
+  document.addEventListener('astro:after-swap', ensureThemeColor);
+
   if (btn && !(btn as any).__shareInit) {
     (btn as any).__shareInit = true;
     btn.addEventListener('click', async () => {
