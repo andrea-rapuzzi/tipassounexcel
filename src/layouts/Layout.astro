@@ -51,11 +51,14 @@ const path = Astro.url.pathname;
 </html>
 
 <script>
-  const bar = document.getElementById('formula-bar');
-  const btn = document.getElementById('fb-toggle');
-  if (bar && btn) {
-    btn.addEventListener('click', () => {
-      bar.classList.toggle('expanded');
-    });
+  function initFormulaBar() {
+    const bar = document.getElementById('formula-bar');
+    const btn = document.getElementById('fb-toggle');
+    if (bar && btn) {
+      btn.addEventListener('click', () => {
+        bar.classList.toggle('expanded');
+      });
+    }
   }
+  document.addEventListener('astro:page-load', initFormulaBar);
 </script>
