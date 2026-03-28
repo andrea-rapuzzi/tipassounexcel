@@ -93,37 +93,22 @@ const currentPath = Astro.url.pathname;
   const label = document.getElementById('share-label') as HTMLSpanElement;
   const icon  = document.getElementById('share-icon') as SVGElement;
 
-  // Mantieni theme-color verde dopo ogni swap di pagina (ClientRouter)
-  function ensureThemeColor() {
-    let meta = document.querySelector('meta[name="theme-color"]') as HTMLMetaElement;
-    if (!meta) {
-      meta = document.createElement('meta');
-      meta.name = 'theme-color';
-      document.head.appendChild(meta);
+  btn?.addEventListener('click', async () => {
+    const url = window.location.href;
+    try {
+      await navigator.clipboard.writeText(url);
+      label.textContent = 'Link copiato';
+      btn.classList.add('copied');
+      icon.classList.add('hidden');
+      setTimeout(() => {
+        label.textContent = 'Condividi';
+        btn.classList.remove('copied');
+        icon.classList.remove('hidden');
+      }, 2000);
+    } catch {
+      prompt('Copia questo link:', url);
     }
-    meta.content = '#207346';
-  }
-  document.addEventListener('astro:after-swap', ensureThemeColor);
-
-  if (btn && !(btn as any).__shareInit) {
-    (btn as any).__shareInit = true;
-    btn.addEventListener('click', async () => {
-      const url = window.location.href;
-      try {
-        await navigator.clipboard.writeText(url);
-        label.textContent = 'Link copiato';
-        btn.classList.add('copied');
-        icon.classList.add('hidden');
-        setTimeout(() => {
-          label.textContent = 'Condividi';
-          btn.classList.remove('copied');
-          icon.classList.remove('hidden');
-        }, 2000);
-      } catch {
-        prompt('Copia questo link:', url);
-      }
-    });
-  }
+  });
 </script>
 
   <!-- Ribbon tabs -->

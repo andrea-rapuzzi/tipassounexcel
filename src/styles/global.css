@@ -11,13 +11,6 @@
   --text-muted: #595959;
   --accent-blue: #0070c0;
 }
-
-/* Transizioni istantanee — evita flash theme-color su Safari */
-::view-transition-old(root),
-::view-transition-new(root) {
-  animation: none;
-}
-
 *,
 *::before,
 *::after {
