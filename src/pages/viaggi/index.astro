@@ -151,7 +151,7 @@ const tipoBadge: Record<string, string> = {
       </tbody>
       <!-- tbody righe vuote finali: sempre in fondo, non toccate dal JS -->
       <tbody id="empty-rows">
-        {Array.from({ length: 50 - trips.length }).map((_, i) => (
+        {Array.from({ length: Math.max(15 - trips.length, 5) }).map((_, i) => (
           <tr class="xl-row-empty">
             <td class="xl-td-num">{trips.length + i + 1}</td>
             <td class="xl-td"></td><td class="xl-td"></td><td class="xl-td"></td><td class="xl-td"></td><td class="xl-td"></td><td class="xl-td xl-td-empty"></td><td class="xl-td xl-td-empty"></td><td class="xl-td xl-td-empty"></td><td class="xl-td xl-td-empty"></td><td class="xl-td xl-td-empty"></td>
