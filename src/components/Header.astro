@@ -93,23 +93,25 @@ const currentPath = Astro.url.pathname;
   const label = document.getElementById('share-label') as HTMLSpanElement;
   const icon  = document.getElementById('share-icon') as SVGElement;
 
-  btn?.addEventListener('click', async () => {
-    const url = window.location.origin + '/';
-    try {
-      await navigator.clipboard.writeText(url);
-      label.textContent = 'Link copiato';
-      btn.classList.add('copied');
-      icon.classList.add('hidden');
-      setTimeout(() => {
-        label.textContent = 'Condividi';
-        btn.classList.remove('copied');
-        icon.classList.remove('hidden');
-      }, 2000);
-    } catch {
-      // fallback per browser che non supportano clipboard API
-      prompt('Copia questo link:', url);
-    }
-  });
+  if (btn && !(btn as any).__shareInit) {
+    (btn as any).__shareInit = true;
+    btn.addEventListener('click', async () => {
+      const url = window.location.href;
+      try {
+        await navigator.clipboard.writeText(url);
+        label.textContent = 'Link copiato';
+        btn.classList.add('copied');
+        icon.classList.add('hidden');
+        setTimeout(() => {
+          label.textContent = 'Condividi';
+          btn.classList.remove('copied');
+          icon.classList.remove('hidden');
+        }, 2000);
+      } catch {
+        prompt('Copia questo link:', url);
+      }
+    });
+  }
 </script>
 
   <!-- Ribbon tabs -->
