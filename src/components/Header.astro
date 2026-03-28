@@ -5,7 +5,11 @@ const currentPath = Astro.url.pathname;
 <header class="header">
   <!-- Top bar: icon + file title + actions -->
   <div class="header-topbar">
-    <div class="header-left"></div>
+    <div class="header-left">
+      <a href="/" class="header-logo-link">
+        <img src="/logo.png" alt="Ti passo un Excel" class="header-logo" />
+      </a>
+    </div>
     <div class="header-title">Ti passo un Excel</div>
     <div class="header-right">
       <button id="share-btn" class="share-btn" title="Condividi">
@@ -20,6 +24,25 @@ const currentPath = Astro.url.pathname;
   </div>
 
 <style>
+  .header-logo-link {
+    display: flex;
+    align-items: center;
+  }
+
+  .header-logo {
+    height: 24px;
+    width: 24px;
+    object-fit: contain;
+    border-radius: 5px;
+    display: block;
+    transition: transform 0.25s cubic-bezier(0.34, 1.56, 0.64, 1), box-shadow 0.25s ease-in-out;
+  }
+
+  .header-logo-link:hover .header-logo {
+    transform: scale(1.06);
+    box-shadow: 0 3px 8px rgba(0, 0, 0, 0.15);
+  }
+
   .share-btn {
     display: inline-flex;
     align-items: center;
