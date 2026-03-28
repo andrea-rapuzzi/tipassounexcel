@@ -83,6 +83,7 @@ function getSampleData() {
       link_sheet: '',
       link_excel: '',
       data: '2023-09-15',
+      emoji: '🏙️',
     },
     {
       slug: 'dolomiti-estate-2023',

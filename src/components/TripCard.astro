@@ -6,26 +6,20 @@ export interface Props {
   tipo: string;
   persone: string;
   costo: string;
+  emoji?: string;
   link_sheet?: string;
   link_excel?: string;
 }
 
-const { slug, titolo, destinazione, tipo, persone, costo, link_sheet, link_excel } = Astro.props;
-
-const tipoEmoji: Record<string, string> = {
-  Mare: '🏖️',
-  Montagna: '⛰️',
-  Città: '🏙️',
-  Avventura: '🧗',
-};
+const { slug, titolo, destinazione, tipo, persone, costo, emoji, link_sheet, link_excel } = Astro.props;
 
 const tipoBadge: Record<string, string> = {
-  Mare: 'badge-mare',
-  Montagna: 'badge-montagna',
-  Città: 'badge-citta',
+  Mare: 'badge-mare', Montagna: 'badge-montagna', Città: 'badge-citta',
+  Roadtrip: 'badge-roadtrip', Natura: 'badge-natura', Cultura: 'badge-cultura',
+  Trekking: 'badge-trekking', Relax: 'badge-relax', Avventura: 'badge-avventura',
 };
 
-const emoji = tipoEmoji[tipo] || '✈️';
+const tripEmoji = emoji || '✈️';
 const badgeClass = tipoBadge[tipo] || 'badge-altro';
 
 const costoFormatted = costo
@@ -35,7 +29,7 @@ const costoFormatted = costo
 
 <article class="trip-card">
   <div class="trip-card-header">
-    <div class="trip-card-icon">{emoji}</div>
+    <div class="trip-card-icon">{tripEmoji}</div>
     <div>
       <div class="trip-card-title">{titolo}</div>
       <div class="trip-card-dest">

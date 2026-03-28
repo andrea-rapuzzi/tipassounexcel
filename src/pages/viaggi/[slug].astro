@@ -12,136 +12,202 @@ export async function getStaticPaths() {
 
 const { trip } = Astro.props;
 
-const tipoEmoji: Record<string, string> = {
-  Mare: '🏖️',
-  Montagna: '⛰️',
-  Città: '🏙️',
-  Avventura: '🧗',
-};
-
 const tipoBadge: Record<string, string> = {
-  Mare: 'badge-mare',
-  Montagna: 'badge-montagna',
-  Città: 'badge-citta',
+  Mare: 'badge-mare', Montagna: 'badge-montagna', Città: 'badge-citta',
+  Roadtrip: 'badge-roadtrip', Natura: 'badge-natura', Cultura: 'badge-cultura',
+  Trekking: 'badge-trekking', Relax: 'badge-relax', Avventura: 'badge-avventura',
 };
 
-const emoji = tipoEmoji[trip.tipo] || '✈️';
-const badgeClass = tipoBadge[trip.tipo] || 'badge-altro';
+const emoji = trip.emoji || '✈️';
 
-const costoFormatted = trip.costo
-  ? new Intl.NumberFormat('it-IT', { style: 'currency', currency: 'EUR', maximumFractionDigits: 0 }).format(Number(trip.costo))
+const costoPerPersona = trip.costo_persona
+  ? new Intl.NumberFormat('it-IT', { style: 'currency', currency: 'EUR', maximumFractionDigits: 0 }).format(Number(trip.costo_persona))
   : '—';
-
-const costoPerPersona =
-  trip.costo && trip.persone && Number(trip.persone) > 0
-    ? new Intl.NumberFormat('it-IT', { style: 'currency', currency: 'EUR', maximumFractionDigits: 0 }).format(
-        Number(trip.costo) / Number(trip.persone)
-      )
-    : '—';
 
 const dataFormatted = trip.data
   ? new Date(trip.data).toLocaleDateString('it-IT', { year: 'numeric', month: 'long', day: 'numeric' })
   : '—';
+
+const tipiList = trip.tipo ? trip.tipo.split(',').map((s: string) => s.trim()) : [];
 ---
 
-<Layout
-  title={trip.titolo}
-  description={trip.descrizione}
->
+<Layout title={trip.titolo} description={trip.descrizione}>
 
-  <!-- Header viaggio -->
+  <!-- Breadcrumb giallino stile Excel -->
   <section class="trip-page-header">
     <div class="container">
-      <div style="margin-bottom:10px;">
-        <a href="/viaggi" style="color:rgba(255,255,255,0.7); font-size:0.85rem;">
-          ← I Viaggi
-        </a>
-      </div>
-      <h1>{emoji} {trip.titolo}</h1>
-      <div class="trip-page-meta">
-        <span class="trip-meta-chip">
-          <span class={`badge ${badgeClass}`}>{trip.tipo}</span>
-        </span>
-        <span class="trip-meta-chip">📍 {trip.destinazione}</span>
-        <span class="trip-meta-chip">👥 {trip.persone} persone</span>
-        <span class="trip-meta-chip">📅 {dataFormatted}</span>
-      </div>
+      <span class="trip-page-breadcrumb">
+        <a href="/">Home</a> › <a href="/viaggi">I Viaggi</a> › {trip.titolo}
+      </span>
     </div>
   </section>
 
-  <div class="page-wrapper">
-    <div class="container" style="max-width: 860px;">
+  <!-- Tabella Excel con i dati del viaggio -->
+  <div class="xl-table-wrap">
+    <table class="xl-table">
+      <thead>
+        <tr class="xl-col-letters">
+          <th class="xl-th-rn"></th>
+          <th class="xl-th-letter">A</th>
+          <th class="xl-th-letter">B</th>
+          <th class="xl-th-letter">C</th>
+          <th class="xl-th-letter">D</th>
+          <th class="xl-th-letter">E</th>
+          <th class="xl-th-letter">F</th>
+          <th class="xl-th-letter">G</th>
+        </tr>
+      </thead>
+      <tbody>
 
-      <!-- Descrizione -->
-      {trip.descrizione && (
-        <div class="sheet-panel" style="padding: 20px 24px; margin-bottom: 24px;">
-          <p style="font-size:1rem; color:var(--text); line-height:1.7; margin:0;">
-            {trip.descrizione}
-          </p>
-        </div>
-      )}
+        <!-- Riga 1: titolo viaggio -->
+        <tr>
+          <td class="xl-td xl-td-num">1</td>
+          <td class="xl-td detail-label">Titolo</td>
+          <td class="xl-td detail-value" colspan="2">
+            <div class="detail-title">
+              <span>{emoji}</span>
+              <span>{trip.titolo}</span>
+            </div>
+          </td>
+          <td class="xl-td"></td><td class="xl-td"></td>
+          <td class="xl-td xl-td-empty"></td><td class="xl-td xl-td-empty"></td>
+        </tr>
 
-      <!-- Scheda dati stile foglio Excel -->
-      <h2 class="section-title" style="margin-bottom:12px;">Dati del viaggio</h2>
-      <div class="trip-detail-sheet" style="margin-bottom: 28px;">
-        <div class="trip-detail-row">
-          <div class="trip-detail-label">Destinazione</div>
-          <div class="trip-detail-value">📍 {trip.destinazione}</div>
-        </div>
-        <div class="trip-detail-row">
-          <div class="trip-detail-label">Tipo di viaggio</div>
-          <div class="trip-detail-value">
-            <span class={`badge ${badgeClass}`}>{trip.tipo}</span>
-          </div>
-        </div>
-        <div class="trip-detail-row">
-          <div class="trip-detail-label">Numero di persone</div>
-          <div class="trip-detail-value">👥 {trip.persone}</div>
-        </div>
-        <div class="trip-detail-row">
-          <div class="trip-detail-label">Costo totale</div>
-          <div class="trip-detail-value costo">{costoFormatted}</div>
-        </div>
-        <div class="trip-detail-row">
-          <div class="trip-detail-label">Costo a persona</div>
-          <div class="trip-detail-value" style="color:var(--text-muted);">{costoPerPersona}</div>
-        </div>
+        <!-- Riga 2: destinazione -->
+        <tr>
+          <td class="xl-td xl-td-num">2</td>
+          <td class="xl-td detail-label">Destinazione</td>
+          <td class="xl-td detail-value">📍 {trip.destinazione}</td>
+          <td class="xl-td"></td><td class="xl-td"></td><td class="xl-td"></td>
+          <td class="xl-td xl-td-empty"></td><td class="xl-td xl-td-empty"></td>
+        </tr>
+
+        <!-- Riga 3: tipo -->
+        <tr>
+          <td class="xl-td xl-td-num">3</td>
+          <td class="xl-td detail-label">Tipo</td>
+          <td class="xl-td detail-value">
+            <div class="xl-td-tags">
+              {tipiList.map((tag: string) => (
+                <span class={`badge ${tipoBadge[tag] || 'badge-altro'}`}>{tag}</span>
+              ))}
+            </div>
+          </td>
+          <td class="xl-td"></td><td class="xl-td"></td><td class="xl-td"></td>
+          <td class="xl-td xl-td-empty"></td><td class="xl-td xl-td-empty"></td>
+        </tr>
+
+        <!-- Riga 4: persone -->
+        <tr>
+          <td class="xl-td xl-td-num">4</td>
+          <td class="xl-td detail-label">Persone</td>
+          <td class="xl-td detail-value">👥 {trip.persone}</td>
+          <td class="xl-td"></td><td class="xl-td"></td><td class="xl-td"></td>
+          <td class="xl-td xl-td-empty"></td><td class="xl-td xl-td-empty"></td>
+        </tr>
+
+        <!-- Riga 5: data -->
         {trip.data && (
-          <div class="trip-detail-row">
-            <div class="trip-detail-label">Data</div>
-            <div class="trip-detail-value">📅 {dataFormatted}</div>
-          </div>
+          <tr>
+            <td class="xl-td xl-td-num">5</td>
+            <td class="xl-td detail-label">Data</td>
+            <td class="xl-td detail-value">📅 {dataFormatted}</td>
+            <td class="xl-td"></td><td class="xl-td"></td><td class="xl-td"></td>
+            <td class="xl-td xl-td-empty"></td><td class="xl-td xl-td-empty"></td>
+          </tr>
         )}
-      </div>
 
-      <!-- Azioni -->
-      <h2 class="section-title" style="margin-bottom:12px;">File del viaggio</h2>
+        <!-- Riga 6: costo a persona -->
+        {trip.costo_persona && (
+          <tr>
+            <td class="xl-td xl-td-num">6</td>
+            <td class="xl-td detail-label">Costo a persona</td>
+            <td class="xl-td detail-value costo-value">{costoPerPersona}</td>
+            <td class="xl-td"></td><td class="xl-td"></td><td class="xl-td"></td>
+            <td class="xl-td xl-td-empty"></td><td class="xl-td xl-td-empty"></td>
+          </tr>
+        )}
 
-      {(!trip.link_sheet && !trip.link_excel) ? (
-        <div class="sheet-panel" style="padding: 24px; text-align:center; color:var(--text-muted);">
-          <div style="font-size:2rem; margin-bottom:8px;">🔧</div>
-          <p style="margin:0;">I link al file non sono ancora stati aggiunti. Aggiorna il Google Sheet per renderli disponibili.</p>
-        </div>
-      ) : (
-        <div class="trip-actions">
-          {trip.link_sheet && (
-            <a href={trip.link_sheet} target="_blank" rel="noopener" class="btn btn-green" style="font-size:1rem; padding:12px 24px;">
-              📊 Apri Google Sheet
-            </a>
-          )}
-          {trip.link_excel && (
-            <a href={trip.link_excel} class="btn btn-ghost" style="font-size:1rem; padding:12px 24px;">
-              ⬇️ Scarica file XLS
-            </a>
-          )}
-        </div>
-      )}
+        <!-- Righe vuote separatore -->
+        {[8, 9].map((n) => (
+          <tr class="xl-row-empty">
+            <td class="xl-td-num">{n}</td>
+            <td class="xl-td"></td><td class="xl-td"></td><td class="xl-td"></td>
+            <td class="xl-td"></td><td class="xl-td"></td>
+            <td class="xl-td xl-td-empty"></td><td class="xl-td xl-td-empty"></td>
+          </tr>
+        ))}
 
-      <!-- Navigazione -->
-      <div style="margin-top: 40px; padding-top: 20px; border-top: 1px solid var(--border-light);">
-        <a href="/viaggi" class="btn btn-ghost">← Torna a tutti i viaggi</a>
-      </div>
+        <!-- Riga 10: link file -->
+        {(trip.link_sheet || trip.link_excel) && (
+          <tr>
+            <td class="xl-td xl-td-num">10</td>
+            <td class="xl-td detail-label">File</td>
+            <td class="xl-td detail-value" colspan="4">
+              <div class="detail-actions">
+                {trip.link_sheet && (
+                  <a href={trip.link_sheet} target="_blank" rel="noopener" class="btn btn-green">
+                    📊 Apri Google Sheet
+                  </a>
+                )}
+                {trip.link_excel && (
+                  <a href={trip.link_excel} class="btn btn-ghost">
+                    ⬇️ Scarica XLS
+                  </a>
+                )}
+              </div>
+            </td>
+            <td class="xl-td xl-td-empty"></td><td class="xl-td xl-td-empty"></td>
+          </tr>
+        )}
 
-    </div>
+        <!-- Righe vuote finali -->
+        {Array.from({ length: 10 }).map((_, i) => (
+          <tr class="xl-row-empty">
+            <td class="xl-td-num">{(trip.link_sheet || trip.link_excel ? 11 : 10) + i}</td>
+            <td class="xl-td"></td><td class="xl-td"></td><td class="xl-td"></td>
+            <td class="xl-td"></td><td class="xl-td"></td>
+            <td class="xl-td xl-td-empty"></td><td class="xl-td xl-td-empty"></td>
+          </tr>
+        ))}
+
+      </tbody>
+    </table>
   </div>
+
 </Layout>
+
+<style>
+  .detail-label {
+    font-size: 0.78rem;
+    font-weight: 700;
+    text-transform: uppercase;
+    letter-spacing: 0.4px;
+    color: var(--text-muted);
+    white-space: nowrap;
+    min-width: 140px;
+  }
+
+  .detail-value {
+    font-size: 0.9rem;
+    color: var(--text);
+  }
+
+  .detail-title {
+    display: flex;
+    align-items: center;
+    gap: 8px;
+    font-size: 0.9rem;
+  }
+
+  .costo-value {
+    font-weight: 700;
+    color: var(--green);
+  }
+
+  .detail-actions {
+    display: flex;
+    gap: 12px;
+    flex-wrap: wrap;
+  }
+</style>
