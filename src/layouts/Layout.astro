@@ -38,9 +38,9 @@ const path = Astro.url.pathname;
     <slot />
     <Footer />
     <div class="sheet-tabs-bar">
-      <a href="/" class={`sheet-tab${path === '/' || path.startsWith('/viaggi') ? ' active' : ''}`}>Ti passo un Excel</a>
+      <a href="/" class={`sheet-tab${path === '/' || path.startsWith('/viaggi') ? ' active' : ''}`}>Homepage</a>
       <a href="/privacy" class={`sheet-tab${path === '/privacy' ? ' active' : ''}`}>Privacy Policy</a>
-      <a href="/about" class={`sheet-tab${path === '/about' ? ' active' : ''}`}>About me</a>
+      <a href="https://www.andrearapuzzi.com" target="_blank" rel="noopener" class="sheet-tab">About me</a>
     </div>
   </body>
 </html>
