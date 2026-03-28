@@ -12,6 +12,8 @@ const {
   title = 'Ti passo un Excel',
   description,
 } = Astro.props as Props;
+
+const path = Astro.url.pathname;
 ---
 
 <!DOCTYPE html>
@@ -36,9 +38,9 @@ const {
     <slot />
     <Footer />
     <div class="sheet-tabs-bar">
-      <a href="/" class="sheet-tab active">Ti passo un Excel</a>
-      <a href="/privacy" class="sheet-tab">Privacy Policy</a>
-      <a href="/about" class="sheet-tab">About me</a>
+      <a href="/" class={`sheet-tab${path === '/' || path.startsWith('/viaggi') ? ' active' : ''}`}>Ti passo un Excel</a>
+      <a href="/privacy" class={`sheet-tab${path === '/privacy' ? ' active' : ''}`}>Privacy Policy</a>
+      <a href="/about" class={`sheet-tab${path === '/about' ? ' active' : ''}`}>About me</a>
     </div>
   </body>
 </html>
