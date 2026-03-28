@@ -78,16 +78,8 @@ const tipoBadge: Record<string, string> = {
           <th class="xl-th">Costo tot.</th>
         </tr>
       </thead>
-      <!-- tbody dati: 2 righe vuote + righe viaggio (manipolato dal JS) -->
+      <!-- tbody dati: righe viaggio (manipolato dal JS) -->
       <tbody id="trips-body">
-        <tr class="xl-row-empty">
-          <td class="xl-td-num">1</td>
-          <td class="xl-td"></td><td class="xl-td"></td><td class="xl-td"></td><td class="xl-td"></td>
-        </tr>
-        <tr class="xl-row-empty">
-          <td class="xl-td-num">2</td>
-          <td class="xl-td"></td><td class="xl-td"></td><td class="xl-td"></td><td class="xl-td"></td>
-        </tr>
         {trips.map((trip, i) => (
           <tr
             class="trip-card-wrapper"
@@ -97,7 +89,7 @@ const tipoBadge: Record<string, string> = {
             data-data={trip.data}
             data-dest={trip.destinazione}
           >
-            <td class="xl-td xl-td-num">{i + 3}</td>
+            <td class="xl-td xl-td-num">{i + 1}</td>
             <td class="xl-td xl-td-title">
               <span class="xl-emoji">{tipoEmoji[trip.tipo] || '✈️'}</span>
               {trip.titolo}
@@ -116,9 +108,9 @@ const tipoBadge: Record<string, string> = {
       </tbody>
       <!-- tbody righe vuote finali: sempre in fondo, non toccate dal JS -->
       <tbody id="empty-rows">
-        {Array.from({ length: 50 - 2 - trips.length }).map((_, i) => (
+        {Array.from({ length: 50 - trips.length }).map((_, i) => (
           <tr class="xl-row-empty">
-            <td class="xl-td-num">{2 + trips.length + i + 1}</td>
+            <td class="xl-td-num">{trips.length + i + 1}</td>
             <td class="xl-td"></td><td class="xl-td"></td><td class="xl-td"></td><td class="xl-td"></td>
           </tr>
         ))}
