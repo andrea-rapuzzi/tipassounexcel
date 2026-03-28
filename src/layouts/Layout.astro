@@ -27,7 +27,7 @@ const path = Astro.url.pathname;
     <ClientRouter />
   </head>
   <body>
-    <Header />
+    <Header transition:persist />
     {description && (
       <div class="formula-bar-hero expanded" id="formula-bar">
         <span class="fb-fx">fx</span>
