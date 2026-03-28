@@ -1,7 +1,6 @@
 ---
 import '../styles/global.css';
 import Header from '../components/Header.astro';
-import { ClientRouter } from 'astro:transitions';
 
 export interface Props {
   title?: string;
@@ -25,10 +24,9 @@ const path = Astro.url.pathname;
     <link rel="icon" href="/logo.png" type="image/png" />
     <meta name="theme-color" content="#207346" />
     <title>{title} · Ti passo un Excel</title>
-    <ClientRouter />
   </head>
   <body>
-    <Header transition:persist />
+    <Header />
     {description && (
       <div class="formula-bar-hero expanded" id="formula-bar">
         <span class="fb-fx">fx</span>
@@ -51,14 +49,11 @@ const path = Astro.url.pathname;
 </html>
 
 <script>
-  function initFormulaBar() {
-    const bar = document.getElementById('formula-bar');
-    const btn = document.getElementById('fb-toggle');
-    if (bar && btn) {
-      btn.addEventListener('click', () => {
-        bar.classList.toggle('expanded');
-      });
-    }
+  const bar = document.getElementById('formula-bar');
+  const btn = document.getElementById('fb-toggle');
+  if (bar && btn) {
+    btn.addEventListener('click', () => {
+      bar.classList.toggle('expanded');
+    });
   }
-  document.addEventListener('astro:page-load', initFormulaBar);
 </script>
