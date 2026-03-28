@@ -41,6 +41,7 @@ const tipoBadge: Record<string, string> = {
       <div class="filter-group">
         <label for="sort-by">Ordina</label>
         <select id="sort-by" class="filter-select">
+          <option value="originale">Ordine originale</option>
           <option value="data-desc">Più recenti</option>
           <option value="data-asc">Più vecchi</option>
           <option value="costo-asc">Costo ↑</option>
@@ -88,6 +89,7 @@ const tipoBadge: Record<string, string> = {
             data-costo={trip.costo}
             data-data={trip.data}
             data-dest={trip.destinazione}
+            data-index={i}
           >
             <td class="xl-td xl-td-num">{i + 1}</td>
             <td class="xl-td xl-td-title">
@@ -156,6 +158,7 @@ const tipoBadge: Record<string, string> = {
     const visible = rows.filter((r) => r.style.display !== 'none');
 
     visible.sort((a, b) => {
+      if (sort === 'originale')  return Number(a.dataset.index) - Number(b.dataset.index);
       if (sort === 'costo-asc')  return Number(a.dataset.costo) - Number(b.dataset.costo);
       if (sort === 'costo-desc') return Number(b.dataset.costo) - Number(a.dataset.costo);
       if (sort === 'dest-asc')   return (a.dataset.dest || '').localeCompare(b.dataset.dest || '');
@@ -184,7 +187,7 @@ const tipoBadge: Record<string, string> = {
   resetBtn.addEventListener('click', () => {
     tipoSel.value    = '';
     personeSel.value = '';
-    sortSel.value    = 'data-desc';
+    sortSel.value    = 'originale';
     applyFilters();
   });
 
