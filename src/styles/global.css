@@ -608,6 +608,7 @@ h1, h2, h3, h4 {
   overflow-x: auto;
   border: 1px solid var(--border);
   border-top: none;
+  -webkit-overflow-scrolling: touch;
 }
 
 .xl-table {
@@ -639,7 +640,7 @@ h1, h2, h3, h4 {
   border-bottom-color: #2b2b2b;
 }
 
-.xl-th-action { width: 90px; }
+.xl-th-action { width: 90px; text-align: center; }
 
 /* Riga lettere colonna (A, B, C…) */
 .xl-col-letters { }
@@ -706,7 +707,7 @@ h1, h2, h3, h4 {
   display: flex;
   align-items: center;
   gap: 8px;
-  min-width: 180px;
+  white-space: nowrap;
 }
 
 .xl-emoji { font-size: 1.1rem; flex-shrink: 0; }

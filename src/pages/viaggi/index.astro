@@ -1,19 +1,23 @@
 ---
 import Layout from '../../layouts/Layout.astro';
-import { getTrips } from '../../lib/sheets.js';
+import { getTrips, getStagione } from '../../lib/sheets.js';
 
 const trips = await getTrips();
 
-const tipi = [...new Set(trips.map((t) => t.tipo).filter(Boolean))].sort();
-const personeOptions = [...new Set(trips.map((t) => t.persone).filter(Boolean))]
-  .map(Number)
-  .sort((a, b) => a - b);
+const allTipi = [...new Set(
+  trips.flatMap((t) => t.tipo ? t.tipo.split(',').map((s) => s.trim()) : [])
+)].sort();
+
+const stagioni = ['Primavera', 'Estate', 'Autunno', 'Inverno'];
 
 const tipoEmoji: Record<string, string> = {
   Mare: '🏖️', Montagna: '⛰️', Città: '🏙️', Avventura: '🧗',
+  Cultura: '🏛️', Trekking: '🥾', Relax: '💆',
 };
 const tipoBadge: Record<string, string> = {
   Mare: 'badge-mare', Montagna: 'badge-montagna', Città: 'badge-citta',
+  Cultura: 'badge-cultura', Trekking: 'badge-trekking', Relax: 'badge-relax',
+  Avventura: 'badge-avventura',
 };
 ---
 
@@ -22,22 +26,34 @@ const tipoBadge: Record<string, string> = {
   <!-- Filter bar — attaccata alla formula bar -->
   <div class="filter-bar">
     <div class="filter-dropdowns">
+      <!-- Multi-select Tipo -->
       <div class="filter-group">
-        <label for="filter-tipo">Tipo</label>
-        <select id="filter-tipo" class="filter-select">
-          <option value="">Tutti</option>
-          {tipi.map((t) => <option value={t}>{t}</option>)}
-        </select>
+        <label>Tipo</label>
+        <div class="multi-select-wrap" id="tipo-wrap">
+          <button type="button" class="filter-select multi-select-btn" id="tipo-btn">
+            <span id="tipo-btn-label">Tutti</span>
+            <svg width="10" height="10" viewBox="0 0 10 10" fill="none" style="flex-shrink:0"><path d="M2 3.5L5 6.5L8 3.5" stroke="currentColor" stroke-width="1.5" stroke-linecap="round" stroke-linejoin="round"/></svg>
+          </button>
+          <div class="multi-select-dropdown" id="tipo-dropdown">
+            {allTipi.map((t) => (
+              <label class="multi-select-option">
+                <input type="checkbox" value={t} class="tipo-checkbox" />
+                <span>{t}</span>
+              </label>
+            ))}
+          </div>
+        </div>
       </div>
+
+      <!-- Stagione filter -->
       <div class="filter-group">
-        <label for="filter-persone">Persone</label>
-        <select id="filter-persone" class="filter-select">
+        <label for="filter-stagione">Stagione</label>
+        <select id="filter-stagione" class="filter-select">
           <option value="">Tutte</option>
-          {personeOptions.map((n) => (
-            <option value={String(n)}>{n} {n === 1 ? 'persona' : 'persone'}</option>
-          ))}
+          {stagioni.map((s) => <option value={s}>{s}</option>)}
         </select>
       </div>
+
       <div class="filter-group">
         <label for="sort-by">Ordina</label>
         <select id="sort-by" class="filter-select">
@@ -69,6 +85,12 @@ const tipoBadge: Record<string, string> = {
           <th class="xl-th-letter">B</th>
           <th class="xl-th-letter">C</th>
           <th class="xl-th-letter">D</th>
+          <th class="xl-th-letter">E</th>
+          <th class="xl-th-letter">F</th>
+          <th class="xl-th-letter">G</th>
+          <th class="xl-th-letter">H</th>
+          <th class="xl-th-letter">I</th>
+          <th class="xl-th-letter">J</th>
         </tr>
         <!-- Riga intestazioni contenuto -->
         <tr>
@@ -76,44 +98,67 @@ const tipoBadge: Record<string, string> = {
           <th class="xl-th">Destinazione</th>
           <th class="xl-th">Tipo</th>
           <th class="xl-th">Persone</th>
-          <th class="xl-th">Costo tot.</th>
+          <th class="xl-th">Data</th>
+          <th class="xl-th xl-th-action">Link</th>
+          <th class="xl-th xl-th-empty"></th>
+          <th class="xl-th xl-th-empty"></th>
+          <th class="xl-th xl-th-empty"></th>
+          <th class="xl-th xl-th-empty"></th>
+          <th class="xl-th xl-th-empty"></th>
         </tr>
       </thead>
       <!-- tbody dati: righe viaggio (manipolato dal JS) -->
       <tbody id="trips-body">
-        {trips.map((trip, i) => (
-          <tr
-            class="trip-card-wrapper"
-            data-tipo={trip.tipo}
-            data-persone={trip.persone}
-            data-costo={trip.costo}
-            data-data={trip.data}
-            data-dest={trip.destinazione}
-            data-index={i}
-          >
-            <td class="xl-td xl-td-num">{i + 1}</td>
-            <td class="xl-td xl-td-title">
-              <span class="xl-emoji">{tipoEmoji[trip.tipo] || '✈️'}</span>
-              {trip.titolo}
-            </td>
-            <td class="xl-td">
-              <span class={`badge ${tipoBadge[trip.tipo] || 'badge-altro'}`}>{trip.tipo}</span>
-            </td>
-            <td class="xl-td">👥 {trip.persone}</td>
-            <td class="xl-td xl-td-costo">
-              {trip.costo
-                ? new Intl.NumberFormat('it-IT', { style: 'currency', currency: 'EUR', maximumFractionDigits: 0 }).format(Number(trip.costo))
-                : '—'}
-            </td>
-          </tr>
-        ))}
+        {trips.map((trip, i) => {
+          const tipiList = trip.tipo ? trip.tipo.split(',').map((s) => s.trim()) : [];
+          const firstTipo = tipiList[0] || '';
+          const stagione = getStagione(trip.data);
+          const dataFormatted = trip.data
+            ? new Date(trip.data).toLocaleDateString('it-IT', { day: '2-digit', month: '2-digit', year: 'numeric' })
+            : '—';
+          return (
+            <tr
+              class="trip-card-wrapper"
+              data-tipo={trip.tipo}
+              data-persone={trip.persone}
+              data-costo={trip.costo}
+              data-data={trip.data}
+              data-dest={trip.destinazione}
+              data-index={i}
+              data-stagione={stagione}
+            >
+              <td class="xl-td xl-td-num">{i + 1}</td>
+              <td class="xl-td xl-td-title">
+                <span class="xl-emoji">{tipoEmoji[firstTipo] || '✈️'}</span>
+                <a href={`/viaggi/${trip.slug}`} class="xl-dest-link">{trip.titolo}</a>
+              </td>
+              <td class="xl-td">
+                <div class="xl-td-tags">
+                  {tipiList.map((tag) => (
+                    <span class={`badge ${tipoBadge[tag] || 'badge-altro'}`}>{tag}</span>
+                  ))}
+                </div>
+              </td>
+              <td class="xl-td">👥 {trip.persone}</td>
+              <td class="xl-td xl-td-data">{dataFormatted}</td>
+              <td class="xl-td xl-td-action">
+                <a href={`/viaggi/${trip.slug}`} class="xl-open-link">Apri →</a>
+              </td>
+              <td class="xl-td xl-td-empty"></td>
+              <td class="xl-td xl-td-empty"></td>
+              <td class="xl-td xl-td-empty"></td>
+              <td class="xl-td xl-td-empty"></td>
+              <td class="xl-td xl-td-empty"></td>
+            </tr>
+          );
+        })}
       </tbody>
       <!-- tbody righe vuote finali: sempre in fondo, non toccate dal JS -->
       <tbody id="empty-rows">
         {Array.from({ length: 50 - trips.length }).map((_, i) => (
           <tr class="xl-row-empty">
             <td class="xl-td-num">{trips.length + i + 1}</td>
-            <td class="xl-td"></td><td class="xl-td"></td><td class="xl-td"></td><td class="xl-td"></td>
+            <td class="xl-td"></td><td class="xl-td"></td><td class="xl-td"></td><td class="xl-td"></td><td class="xl-td"></td><td class="xl-td xl-td-empty"></td><td class="xl-td xl-td-empty"></td><td class="xl-td xl-td-empty"></td><td class="xl-td xl-td-empty"></td><td class="xl-td xl-td-empty"></td>
           </tr>
         ))}
       </tbody>
@@ -130,29 +175,172 @@ const tipoBadge: Record<string, string> = {
 
 </Layout>
 
+<style>
+  .multi-select-wrap {
+    position: relative;
+  }
+
+  .multi-select-btn {
+    display: flex;
+    align-items: center;
+    justify-content: space-between;
+    gap: 6px;
+    min-width: 110px;
+    cursor: pointer;
+    text-align: left;
+  }
+
+  .multi-select-btn #tipo-btn-label {
+    flex: 1;
+    overflow: hidden;
+    text-overflow: ellipsis;
+    white-space: nowrap;
+  }
+
+  .multi-select-dropdown {
+    display: none;
+    position: absolute;
+    top: calc(100% + 2px);
+    left: 0;
+    z-index: 100;
+    background: #fff;
+    border: 1px solid #b0b0b0;
+    border-radius: 3px;
+    box-shadow: 0 4px 12px rgba(0,0,0,0.12);
+    min-width: 160px;
+    padding: 4px 0;
+  }
+
+  .multi-select-dropdown.open {
+    display: block;
+  }
+
+  .multi-select-option {
+    display: flex;
+    align-items: center;
+    gap: 8px;
+    padding: 6px 12px;
+    font-size: 0.82rem;
+    cursor: pointer;
+    white-space: nowrap;
+    color: #333;
+    transition: background 0.1s;
+  }
+
+  .multi-select-option:hover {
+    background: #f0f4f0;
+  }
+
+  .multi-select-option input[type="checkbox"] {
+    accent-color: #207346;
+    width: 13px;
+    height: 13px;
+    cursor: pointer;
+  }
+
+  .xl-td-tags {
+    display: flex;
+    flex-wrap: nowrap;
+    gap: 3px;
+    align-items: center;
+    white-space: nowrap;
+  }
+
+  .xl-td-tags .badge {
+    flex-shrink: 0;
+  }
+
+  .xl-td-data {
+    white-space: nowrap;
+    font-variant-numeric: tabular-nums;
+    font-size: 0.82rem;
+    color: #555;
+  }
+
+  .xl-dest-link {
+    color: inherit;
+    text-decoration: none;
+    font-weight: 600;
+  }
+
+  .xl-dest-link:hover {
+    color: var(--green, #207346);
+    text-decoration: underline;
+  }
+
+  .xl-th-empty,
+  .xl-td-empty {
+    min-width: 100px;
+  }
+
+  .badge-cultura { background: #e8d5f5; color: #6b21a8; }
+  .badge-trekking { background: #d5f0e8; color: #065f46; }
+  .badge-relax { background: #fce4ec; color: #880e4f; }
+  .badge-avventura { background: #fff3cd; color: #856404; }
+</style>
+
 <script>
-  const tipoSel    = document.getElementById('filter-tipo') as HTMLSelectElement;
-  const personeSel = document.getElementById('filter-persone') as HTMLSelectElement;
-  const sortSel    = document.getElementById('sort-by') as HTMLSelectElement;
-  const resetBtn   = document.getElementById('reset-filters') as HTMLButtonElement;
-  const countLabel = document.getElementById('count-label') as HTMLSpanElement;
-  const emptyMsg   = document.getElementById('empty-filtered') as HTMLDivElement;
-  const tbody      = document.getElementById('trips-body') as HTMLTableSectionElement;
+  const tipoCheckboxes = Array.from(document.querySelectorAll('.tipo-checkbox')) as HTMLInputElement[];
+  const tipoBtnLabel   = document.getElementById('tipo-btn-label') as HTMLSpanElement;
+  const tipoBtn        = document.getElementById('tipo-btn') as HTMLButtonElement;
+  const tipoDropdown   = document.getElementById('tipo-dropdown') as HTMLDivElement;
+  const stagineSel     = document.getElementById('filter-stagione') as HTMLSelectElement;
+  const sortSel        = document.getElementById('sort-by') as HTMLSelectElement;
+  const resetBtn       = document.getElementById('reset-filters') as HTMLButtonElement;
+  const countLabel     = document.getElementById('count-label') as HTMLSpanElement;
+  const emptyMsg       = document.getElementById('empty-filtered') as HTMLDivElement;
+  const tbody          = document.getElementById('trips-body') as HTMLTableSectionElement;
+
+  // Toggle dropdown
+  tipoBtn.addEventListener('click', (e) => {
+    e.stopPropagation();
+    tipoDropdown.classList.toggle('open');
+  });
+
+  document.addEventListener('click', (e) => {
+    if (!tipoBtn.contains(e.target as Node) && !tipoDropdown.contains(e.target as Node)) {
+      tipoDropdown.classList.remove('open');
+    }
+  });
+
+  function getSelectedTipi(): string[] {
+    return tipoCheckboxes.filter((cb) => cb.checked).map((cb) => cb.value);
+  }
+
+  function updateTipoBtnLabel() {
+    const selected = getSelectedTipi();
+    if (selected.length === 0) {
+      tipoBtnLabel.textContent = 'Tutti';
+    } else if (selected.length === 1) {
+      tipoBtnLabel.textContent = selected[0];
+    } else {
+      tipoBtnLabel.textContent = `${selected.length} selezionati`;
+    }
+  }
+
+  tipoCheckboxes.forEach((cb) => {
+    cb.addEventListener('change', () => {
+      updateTipoBtnLabel();
+      applyFilters();
+    });
+  });
 
   function getRows() {
     return Array.from(tbody.querySelectorAll('.trip-card-wrapper')) as HTMLTableRowElement[];
   }
 
   function applyFilters() {
-    const tipo    = tipoSel.value;
-    const persone = personeSel.value;
-    const sort    = sortSel.value;
+    const selectedTipi = getSelectedTipi();
+    const stagione = stagineSel.value;
+    const sort = sortSel.value;
 
     const rows = getRows();
 
     rows.forEach((r) => {
-      const match = (!tipo || r.dataset.tipo === tipo) && (!persone || r.dataset.persone === persone);
-      r.style.display = match ? '' : 'none';
+      const rowTipi = (r.dataset.tipo || '').split(',').map((s) => s.trim());
+      const tipoMatch = selectedTipi.length === 0 || selectedTipi.some((t) => rowTipi.includes(t));
+      const stagioneMatch = !stagione || r.dataset.stagione === stagione;
+      r.style.display = tipoMatch && stagioneMatch ? '' : 'none';
     });
 
     const visible = rows.filter((r) => r.style.display !== 'none');
@@ -174,13 +362,13 @@ const tipoBadge: Record<string, string> = {
     emptyMsg.style.display = count === 0 ? 'block' : 'none';
   }
 
-  tipoSel.addEventListener('change', applyFilters);
-  personeSel.addEventListener('change', applyFilters);
+  stagineSel.addEventListener('change', applyFilters);
   sortSel.addEventListener('change', applyFilters);
 
   resetBtn.addEventListener('click', () => {
-    tipoSel.value    = '';
-    personeSel.value = '';
+    tipoCheckboxes.forEach((cb) => (cb.checked = false));
+    updateTipoBtnLabel();
+    stagineSel.value = '';
     sortSel.value    = 'originale';
     applyFilters();
   });
