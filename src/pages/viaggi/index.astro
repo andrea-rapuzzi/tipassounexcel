@@ -138,6 +138,7 @@ const tipoBadge: Record<string, string> = {
   const countLabel = document.getElementById('count-label') as HTMLSpanElement;
   const emptyMsg   = document.getElementById('empty-filtered') as HTMLDivElement;
   const tbody      = document.getElementById('trips-body') as HTMLTableSectionElement;
+  const emptyRows  = Array.from(document.querySelectorAll('#empty-rows .xl-row-empty')) as HTMLTableRowElement[];
 
   function getRows() {
     return Array.from(tbody.querySelectorAll('.trip-card-wrapper')) as HTMLTableRowElement[];
@@ -168,12 +169,16 @@ const tipoBadge: Record<string, string> = {
 
     visible.forEach((r, idx) => {
       tbody.appendChild(r);
-      // aggiorna il numero di riga nella prima cella
       const numCell = r.querySelector('.xl-td-num');
       if (numCell) numCell.textContent = String(idx + 1);
     });
 
-    // le righe nascoste riprendono il numero originale (non importa, sono hidden)
+    // rinumera le righe vuote in continuità con le righe dati visibili
+    emptyRows.forEach((r, idx) => {
+      const numCell = r.querySelector('.xl-td-num');
+      if (numCell) numCell.textContent = String(visible.length + idx + 1);
+    });
+
     const count = visible.length;
     const total = rows.length;
     countLabel.textContent = count === total ? `${total} viaggi` : `${count} di ${total} viaggi`;
