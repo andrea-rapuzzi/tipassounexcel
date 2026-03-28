@@ -163,8 +163,14 @@ const tipoBadge: Record<string, string> = {
       return (b.dataset.data || '').localeCompare(a.dataset.data || '');
     });
 
-    visible.forEach((r) => tbody.appendChild(r));
+    visible.forEach((r, idx) => {
+      tbody.appendChild(r);
+      // aggiorna il numero di riga nella prima cella
+      const numCell = r.querySelector('.xl-td-num');
+      if (numCell) numCell.textContent = String(idx + 1);
+    });
 
+    // le righe nascoste riprendono il numero originale (non importa, sono hidden)
     const count = visible.length;
     const total = rows.length;
     countLabel.textContent = count === total ? `${total} viaggi` : `${count} di ${total} viaggi`;
